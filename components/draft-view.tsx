@@ -35,7 +35,7 @@ export function DraftView({
     <div className="w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em]">
-          {streaming ? "Pressing..." : "Your draft"}
+          {streaming ? "Drafting..." : "Your draft"}
         </div>
         {!streaming && (
           <div className="flex items-center gap-4">

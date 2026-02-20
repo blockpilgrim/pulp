@@ -85,7 +85,7 @@ export default function WritePage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Pulping failed");
+        throw new Error(errData.error || "Something went wrong");
       }
 
       const data: PulpResponse = await res.json();
@@ -311,7 +311,7 @@ export default function WritePage() {
 
       {/* Loading: pulping */}
       {state === "pulping" && (
-        <Loading message="pulping..." />
+        <Loading message="thinking..." />
       )}
 
       {/* Pulped / Fill */}

@@ -50,7 +50,7 @@ export function Braindump({
           disabled={!canPulp || disabled}
           className="btn-primary"
         >
-          Pulp
+          Probe
         </button>
       </div>
     </div>

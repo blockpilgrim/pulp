@@ -75,14 +75,14 @@ export function PulpView({
           disabled={disabled}
           className="btn-primary"
         >
-          Pulp again
+          Probe again
         </button>
         <button
           onClick={onPress}
           disabled={disabled}
           className="btn-primary"
         >
-          Press
+          Write draft
         </button>
       </div>
     </div>

@@ -23,19 +23,19 @@ const sourceSerif = Source_Serif_4({
 
 export const metadata: Metadata = {
   title: "Pulp",
-  description: "You write raw. AI pulps, provokes, presses.",
+  description: "Raw writing, sharp thinking.",
   icons: {
     icon: "/favicon.svg",
   },
   openGraph: {
     title: "Pulp",
-    description: "You write raw. AI pulps, provokes, presses.",
+    description: "Raw writing, sharp thinking.",
     type: "website",
   },
   twitter: {
     card: "summary",
     title: "Pulp",
-    description: "You write raw. AI pulps, provokes, presses.",
+    description: "Raw writing, sharp thinking.",
   },
 };
 

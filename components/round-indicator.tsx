@@ -12,12 +12,12 @@ export function RoundIndicator({
       case "braindump":
         return "write";
       case "pulping":
-        return "pulping...";
+        return "thinking...";
       case "pulped":
       case "fill":
         return `round ${current}`;
       case "drafting":
-        return "pressing...";
+        return "drafting...";
       case "draft":
       case "edit":
         return "draft";

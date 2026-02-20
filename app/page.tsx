@@ -33,7 +33,7 @@ export default function Home() {
         <p className="text-muted text-[0.8rem] font-mono tracking-wide leading-relaxed">
           Write raw. AI provokes deeper thinking.
           <br />
-          Then presses it into a draft.
+          Then shapes it into a draft.
         </p>
       </header>
 
@@ -41,9 +41,9 @@ export default function Home() {
       <div className="flex items-center gap-3 mb-10 text-[0.7rem] font-mono text-muted-light tracking-wide">
         <span>write raw</span>
         <span className="text-border">&#8594;</span>
-        <span>pulp</span>
+        <span>probe</span>
         <span className="text-border">&#8594;</span>
-        <span>press</span>
+        <span>draft</span>
       </div>
 
       {/* Direction + CTA */}
@@ -98,8 +98,8 @@ export default function Home() {
                       {s.state === "fill" && `round ${s.currentRound}`}
                       {s.state === "draft" && "draft"}
                       {s.state === "edit" && "editing"}
-                      {s.state === "pulping" && "pulping..."}
-                      {s.state === "drafting" && "pressing..."}
+                      {s.state === "pulping" && "thinking..."}
+                      {s.state === "drafting" && "drafting..."}
                     </div>
                   </div>
                   <button
