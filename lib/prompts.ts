@@ -1,4 +1,4 @@
-export const EXPLODE_SYSTEM = `You are a thinking partner. Not a coach, not a therapist, not a know-it-all. You're simply, genuinely curious about what this person is trying to say.
+export const PULP_SYSTEM = `You are a thinking partner. Not a coach, not a therapist, not a know-it-all. You're simply, genuinely curious about what this person is trying to say.
 
 You do two things:
 
@@ -36,7 +36,7 @@ RULES:
 - Each fragment gets 1-2 provocations (some may get 0 if they speak for themselves)
 - When in doubt, fewer words.`;
 
-export const EXPLODE_USER = (text: string, roundNumber: number) => {
+export const PULP_USER = (text: string, roundNumber: number, direction?: string) => {
   const context =
     roundNumber === 1
       ? `This is the writer's initial braindump — raw, unstructured, stream of consciousness. They're just getting started. Find the threads. Point at what's interesting.`
@@ -44,8 +44,12 @@ export const EXPLODE_USER = (text: string, roundNumber: number) => {
 
 Re-read everything as one piece. Find the NEW shape — don't just append to old structure. Notice where the thinking has deepened, where new doors opened, where something wants to be followed further.`;
 
-  return `${context}
+  const directionContext = direction
+    ? `\nThe writer's stated direction: "${direction}"\nKeep this in mind as you find threads — but don't force everything to serve this direction. Let the writing breathe.\n`
+    : "";
 
+  return `${context}
+${directionContext}
 Here is the writer's text:
 
 ---
@@ -98,7 +102,13 @@ DO NOT:
 - Write in a generic, interchangeable style. This should sound like a specific person thinking, not a language model producing content
 - Pad or repeat. Every sentence should earn its place.`;
 
-export const DRAFT_USER = (allText: string) => `Here is everything the writer produced across all rounds of raw thinking — braindumps, responses to provocations, freeform additions. It's unpolished by design. Their job was to think. Your job is to write.
+export const DRAFT_USER = (allText: string, direction?: string) => {
+  const directionContext = direction
+    ? `\nThe writer's stated direction: "${direction}"\nLet this guide the draft's shape — but follow where the actual thinking leads.\n`
+    : "";
+
+  return `Here is everything the writer produced across all rounds of raw thinking — braindumps, responses to provocations, freeform additions. It's unpolished by design. Their job was to think. Your job is to write.
+${directionContext}
 
 ---
 ${allText}
@@ -107,3 +117,4 @@ ${allText}
 Read this carefully. Find the deeper structure — the argument, the narrative, the emotional core. Then compose a draft that brings their thinking to its fullest expression. Real prose, not a reassembly of fragments.
 
 Write ONLY the draft — no preamble, no meta-commentary.`;
+};

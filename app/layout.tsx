@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,6 +24,19 @@ const sourceSerif = Source_Serif_4({
 export const metadata: Metadata = {
   title: "Pulp",
   description: "You write raw. AI pulps, provokes, presses.",
+  icons: {
+    icon: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Pulp",
+    description: "You write raw. AI pulps, provokes, presses.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Pulp",
+    description: "You write raw. AI pulps, provokes, presses.",
+  },
 };
 
 export default function RootLayout({
@@ -35,7 +49,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

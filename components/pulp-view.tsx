@@ -4,14 +4,14 @@ import type { Round } from "@/lib/types";
 import { Fragment } from "./fragment";
 import { Provocation } from "./provocation";
 
-export function ExplosionView({
+export function PulpView({
   round,
   fillMode,
   freeformValue,
   onProvocationResponse,
   onFreeformChange,
-  onNext,
-  nextLabel,
+  onPulpAgain,
+  onPress,
   disabled,
 }: {
   round: Round;
@@ -19,8 +19,8 @@ export function ExplosionView({
   freeformValue: string;
   onProvocationResponse: (provocationId: string, value: string) => void;
   onFreeformChange: (v: string) => void;
-  onNext: () => void;
-  nextLabel: string;
+  onPulpAgain: () => void;
+  onPress: () => void;
   disabled: boolean;
 }) {
   // Build interleaved list: fragment, then its provocations
@@ -69,13 +69,20 @@ export function ExplosionView({
         </div>
       )}
 
-      <div className="flex justify-end mt-8 mb-8">
+      <div className="flex justify-end gap-3 mt-8 mb-8">
         <button
-          onClick={onNext}
+          onClick={onPulpAgain}
           disabled={disabled}
           className="btn-primary"
         >
-          {nextLabel}
+          Pulp again
+        </button>
+        <button
+          onClick={onPress}
+          disabled={disabled}
+          className="btn-primary"
+        >
+          Press
         </button>
       </div>
     </div>

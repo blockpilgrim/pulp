@@ -203,6 +203,8 @@ body > * {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
   padding: 0.625rem 1.5rem;
   font-family: var(--font-geist-mono);
   font-size: 0.8rem;
@@ -213,7 +215,7 @@ body > * {
   border: 1px solid var(--foreground);
   border-radius: 1px;
   cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.1s ease;
 }
 
 .btn-primary:hover {
@@ -222,7 +224,8 @@ body > * {
 }
 
 .btn-primary:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  transition: transform 0.05s ease;
 }
 
 .btn-primary:disabled {
@@ -313,4 +316,31 @@ body > * {
 
 .animate-pulse-slow {
   animation: pulse-slow 2s ease-in-out infinite;
+}
+
+/* ========== Mobile ========== */
+@media (max-width: 640px) {
+  .braindump-textarea {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .fragment-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .draft-text {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .provocation {
+    font-size: 0.78rem;
+  }
+
+  .btn-primary {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.82rem;
+  }
 }

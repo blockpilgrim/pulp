@@ -5,12 +5,12 @@ import { useRef, useEffect } from "react";
 export function Braindump({
   value,
   onChange,
-  onExplode,
+  onPulp,
   disabled,
 }: {
   value: string;
   onChange: (v: string) => void;
-  onExplode: () => void;
+  onPulp: () => void;
   disabled: boolean;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -27,7 +27,8 @@ export function Braindump({
     el.style.height = Math.max(el.scrollHeight, 300) + "px";
   }, [value]);
 
-  const canExplode = value.trim().length > 20;
+  const canPulp = value.trim().length > 20;
+  const wordCount = value.trim() ? value.trim().split(/\s+/).length : 0;
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -40,10 +41,13 @@ export function Braindump({
         className="braindump-textarea w-full bg-transparent px-0 py-4 min-h-[300px]"
       />
 
-      <div className="flex justify-end mt-6 mb-8">
+      <div className="flex items-center justify-between mt-6 mb-8">
+        <div className="text-[0.7rem] font-mono text-muted-light">
+          {wordCount > 0 && `${wordCount} word${wordCount === 1 ? "" : "s"}`}
+        </div>
         <button
-          onClick={onExplode}
-          disabled={!canExplode || disabled}
+          onClick={onPulp}
+          disabled={!canPulp || disabled}
           className="btn-primary"
         >
           Pulp

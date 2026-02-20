@@ -2,22 +2,20 @@
 
 export function RoundIndicator({
   current,
-  max,
   state,
 }: {
   current: number;
-  max: number;
   state: string;
 }) {
   const label = (() => {
     switch (state) {
       case "braindump":
         return "write";
-      case "exploding":
+      case "pulping":
         return "pulping...";
-      case "explosion":
+      case "pulped":
       case "fill":
-        return `round ${current} of ${max}`;
+        return `round ${current}`;
       case "drafting":
         return "pressing...";
       case "draft":

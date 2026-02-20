@@ -1,19 +1,22 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export function DraftView({
   draft,
   streaming,
   onDraftChange,
   onBack,
+  onDownload,
 }: {
   draft: string;
   streaming: boolean;
   onDraftChange: (v: string) => void;
   onBack: () => void;
+  onDownload?: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
 
   // Scroll to bottom during streaming
   useEffect(() => {
@@ -22,6 +25,12 @@ export function DraftView({
     }
   }, [draft, streaming]);
 
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(draft);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -29,12 +38,28 @@ export function DraftView({
           {streaming ? "Pressing..." : "Your draft"}
         </div>
         {!streaming && (
-          <button
-            onClick={onBack}
-            className="link-subtle text-[0.72rem] font-mono cursor-pointer"
-          >
-            back to home
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleCopy}
+              className="link-subtle text-[0.72rem] font-mono cursor-pointer"
+            >
+              {copied ? "copied" : "copy"}
+            </button>
+            {onDownload && (
+              <button
+                onClick={onDownload}
+                className="link-subtle text-[0.72rem] font-mono cursor-pointer"
+              >
+                download .txt
+              </button>
+            )}
+            <button
+              onClick={onBack}
+              className="link-subtle text-[0.72rem] font-mono cursor-pointer"
+            >
+              back to home
+            </button>
+          </div>
         )}
       </div>
 

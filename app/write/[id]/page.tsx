@@ -3,10 +3,11 @@
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useState, useEffect } from "react";
 import { useSession } from "@/lib/store";
-import { getAllUserText } from "@/lib/utils";
-import type { Round, ExplodeResponse } from "@/lib/types";
+import { getAllUserText, sanitizeFilename, downloadAsTxt } from "@/lib/utils";
+import { getApiKey } from "@/lib/api-key";
+import type { Round, PulpResponse } from "@/lib/types";
 import { Braindump } from "@/components/braindump";
-import { ExplosionView } from "@/components/explosion-view";
+import { PulpView } from "@/components/pulp-view";
 import { DraftView } from "@/components/draft-view";
 import { RoundIndicator } from "@/components/round-indicator";
 import { Loading } from "@/components/loading";
@@ -24,6 +25,17 @@ export default function WritePage() {
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Warn before closing during active API calls
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (streaming || session?.state === "pulping") {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [streaming, session?.state]);
+
   // Sync from persisted session on load
   useEffect(() => {
     if (!session) return;
@@ -37,42 +49,46 @@ export default function WritePage() {
       setDraftText(session.draft);
     }
     // If user closed tab during API call, reset to usable state
-    if (session.state === "exploding") {
+    if (session.state === "pulping") {
       update({ state: session.currentRound > 0 ? "fill" : "braindump" });
     } else if (session.state === "drafting") {
       update({ state: "fill" });
     }
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleExplode = useCallback(async () => {
+  const handlePulp = useCallback(async () => {
     if (!session) return;
     setError(null);
 
     const roundNumber = session.currentRound + 1;
-    const textToExplode =
+    const textToPulp =
       roundNumber === 1
         ? braindumpText
         : getAllUserText({ braindump: braindumpText, rounds: session.rounds });
 
     update({
       braindump: braindumpText,
-      state: "exploding",
+      state: "pulping",
       title: session.title || braindumpText.split(/[.\n]/)[0]?.trim().substring(0, 50) || "Untitled",
     });
 
     try {
-      const res = await fetch("/api/explode", {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      const key = getApiKey();
+      if (key) headers["x-api-key"] = key;
+
+      const res = await fetch("/api/pulp", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: textToExplode, roundNumber }),
+        headers,
+        body: JSON.stringify({ text: textToPulp, roundNumber, direction: session.direction }),
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Explosion failed");
+        throw new Error(errData.error || "Pulping failed");
       }
 
-      const data: ExplodeResponse = await res.json();
+      const data: PulpResponse = await res.json();
 
       const round: Round = {
         number: roundNumber,
@@ -91,9 +107,9 @@ export default function WritePage() {
       addRound(round);
       setLocalRound(round);
       setFreeform("");
-      update({ state: "explosion" });
+      update({ state: "pulped" });
 
-      // Brief pause to let user see the explosion, then enable fill
+      // Brief pause to let user see the result, then enable fill
       setTimeout(() => {
         update({ state: "fill" });
       }, 1200);
@@ -128,15 +144,15 @@ export default function WritePage() {
     [localRound, updateRound]
   );
 
-  const handleReExplode = useCallback(() => {
+  const handleRePulp = useCallback(() => {
     if (localRound) {
       updateRound(localRound.number, {
         provocations: localRound.provocations,
         freeformAddition: freeform,
       });
     }
-    handleExplode();
-  }, [localRound, freeform, updateRound, handleExplode]);
+    handlePulp();
+  }, [localRound, freeform, updateRound, handlePulp]);
 
   const handleDraft = useCallback(async () => {
     if (!session) return;
@@ -154,6 +170,7 @@ export default function WritePage() {
     setDraftText("");
     setStreaming(true);
 
+    let fullDraft = "";
     try {
       // Use localRound for latest responses (session.rounds may be stale)
       const roundsForDraft = localRound
@@ -168,10 +185,14 @@ export default function WritePage() {
         rounds: roundsForDraft,
       });
 
+      const draftHeaders: Record<string, string> = { "Content-Type": "application/json" };
+      const draftKey = getApiKey();
+      if (draftKey) draftHeaders["x-api-key"] = draftKey;
+
       const res = await fetch("/api/draft", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: allText }),
+        headers: draftHeaders,
+        body: JSON.stringify({ text: allText, direction: session.direction }),
       });
 
       if (!res.ok) {
@@ -181,7 +202,6 @@ export default function WritePage() {
 
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
-      let fullDraft = "";
 
       if (reader) {
         while (true) {
@@ -203,8 +223,14 @@ export default function WritePage() {
       update({ state: "draft", draft: fullDraft });
     } catch (err) {
       setStreaming(false);
-      setError(err instanceof Error ? err.message : "Something went wrong");
-      update({ state: "fill" });
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setError(msg);
+      // Save partial draft if we got any content
+      if (fullDraft.length > 0) {
+        update({ state: "draft", draft: fullDraft });
+      } else {
+        update({ state: "fill" });
+      }
     }
   }, [session, braindumpText, localRound, freeform, update, updateRound]);
 
@@ -231,7 +257,6 @@ export default function WritePage() {
   }
 
   const state = session.state;
-  const isFinalRound = session.currentRound >= session.maxRounds;
 
   return (
     <div className="min-h-screen flex flex-col px-4 pt-12 pb-16">
@@ -245,7 +270,6 @@ export default function WritePage() {
         </button>
         <RoundIndicator
           current={session.currentRound}
-          max={session.maxRounds}
           state={state}
         />
       </div>
@@ -263,6 +287,15 @@ export default function WritePage() {
         </div>
       )}
 
+      {/* Direction hint */}
+      {state === "braindump" && session.direction && (
+        <div className="w-full max-w-2xl mx-auto mb-2">
+          <div className="text-[0.75rem] font-mono text-muted-light italic">
+            {session.direction}
+          </div>
+        </div>
+      )}
+
       {/* Braindump */}
       {state === "braindump" && (
         <Braindump
@@ -271,27 +304,27 @@ export default function WritePage() {
             setBraindumpText(v);
             update({ braindump: v });
           }}
-          onExplode={handleExplode}
+          onPulp={handlePulp}
           disabled={false}
         />
       )}
 
-      {/* Loading: explosion */}
-      {state === "exploding" && (
+      {/* Loading: pulping */}
+      {state === "pulping" && (
         <Loading message="pulping..." />
       )}
 
-      {/* Explosion / Fill */}
-      {(state === "explosion" || state === "fill") && localRound && (
-        <ExplosionView
+      {/* Pulped / Fill */}
+      {(state === "pulped" || state === "fill") && localRound && (
+        <PulpView
           round={localRound}
           fillMode={state === "fill"}
           freeformValue={freeform}
           onProvocationResponse={handleProvocationResponse}
           onFreeformChange={handleFreeformChange}
-          onNext={isFinalRound ? handleDraft : handleReExplode}
-          nextLabel={isFinalRound ? "Press" : "Pulp again"}
-          disabled={state === "explosion"}
+          onPulpAgain={handleRePulp}
+          onPress={handleDraft}
+          disabled={state === "pulped"}
         />
       )}
 
@@ -307,6 +340,11 @@ export default function WritePage() {
             }
           }}
           onBack={() => router.push("/")}
+          onDownload={() => {
+            const title = session.title || "pulp-draft";
+            const date = new Date().toISOString().split("T")[0];
+            downloadAsTxt(draftText, `${sanitizeFilename(title)}-${date}.txt`);
+          }}
         />
       )}
     </div>

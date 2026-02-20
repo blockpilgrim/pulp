@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pulp
 
-## Getting Started
+A writing tool that inverts the AI-writing flow. You write raw, AI provokes deeper thinking, then presses your ideas into a polished draft.
 
-First, run the development server:
+**write raw → pulp → press**
+
+## How it works
+
+1. **Write** — braindump your raw thoughts, stream of consciousness
+2. **Pulp** — AI splits your text into fragments and inserts provocations: tiny nudges that push your thinking further
+3. **Fill** — respond to provocations, add more, pulp again as many times as you want
+4. **Press** — AI composes a draft from everything you've written, finding the deeper structure in your thinking
+
+## Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Users provide their own Anthropic API key (BYOK). Keys are stored in the browser's localStorage and sent directly to Anthropic's API.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 (App Router)
+- Tailwind CSS v4
+- Anthropic Claude (via Vercel AI SDK)
+- All data stored in browser localStorage

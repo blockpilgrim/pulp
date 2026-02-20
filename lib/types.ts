@@ -1,7 +1,7 @@
 export type SessionState =
   | "braindump"
-  | "exploding"
-  | "explosion"
+  | "pulping"
+  | "pulped"
   | "fill"
   | "drafting"
   | "draft"
@@ -31,6 +31,7 @@ export type Round = {
 export type Session = {
   id: string;
   title: string;
+  direction: string;
   createdAt: number;
   updatedAt: number;
   state: SessionState;
@@ -41,7 +42,7 @@ export type Session = {
   draft: string | null;
 };
 
-export type ExplodeResponse = {
+export type PulpResponse = {
   fragments: { id: string; text: string }[];
   provocations: { id: string; afterFragmentId: string; text: string }[];
 };
