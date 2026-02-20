@@ -15,14 +15,23 @@ export function DraftView({
   onBack: () => void;
   onDownload?: () => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const streamRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [copied, setCopied] = useState(false);
 
   // Scroll to bottom during streaming
   useEffect(() => {
-    if (streaming && ref.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
+    if (streaming && streamRef.current) {
+      window.scrollTo({ top: document.body.scrollHeight });
     }
+  }, [draft, streaming]);
+
+  // Auto-resize textarea when draft changes (including initial load)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el || streaming) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
   }, [draft, streaming]);
 
   const handleCopy = async () => {
@@ -65,7 +74,7 @@ export function DraftView({
 
       {streaming ? (
         <div
-          ref={ref}
+          ref={streamRef}
           className="draft-text whitespace-pre-wrap py-4 min-h-[300px]"
         >
           {draft}
@@ -73,15 +82,10 @@ export function DraftView({
         </div>
       ) : (
         <textarea
+          ref={textareaRef}
           value={draft}
           onChange={(e) => onDraftChange(e.target.value)}
-          className="draft-text draft-editable w-full bg-transparent py-4 min-h-[400px] resize-none"
-          style={{ height: "auto" }}
-          onInput={(e) => {
-            const el = e.currentTarget;
-            el.style.height = "auto";
-            el.style.height = el.scrollHeight + "px";
-          }}
+          className="draft-text draft-editable w-full bg-transparent py-4 min-h-[400px] resize-none overflow-hidden"
         />
       )}
     </div>

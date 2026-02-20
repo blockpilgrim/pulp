@@ -259,7 +259,7 @@ export default function WritePage() {
   const state = session.state;
 
   return (
-    <div className="min-h-screen flex flex-col px-4 pt-12 pb-16">
+    <div className="min-h-screen flex flex-col px-4 pt-12 pb-4">
       {/* Header */}
       <div className="w-full max-w-2xl mx-auto flex items-center justify-between mb-8">
         <button
