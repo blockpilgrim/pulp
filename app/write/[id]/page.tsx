@@ -211,7 +211,7 @@ export default function WritePage() {
   if (!loaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted animate-pulse-slow font-mono text-sm">loading...</div>
+        <div className="text-muted animate-pulse-slow font-mono text-[0.8rem]">loading...</div>
       </div>
     );
   }
@@ -219,10 +219,10 @@ export default function WritePage() {
   if (!session) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <div className="text-muted font-mono text-sm">Session not found</div>
+        <div className="text-muted font-mono text-[0.8rem]">Session not found</div>
         <button
           onClick={() => router.push("/")}
-          className="text-xs font-mono text-accent hover:underline cursor-pointer"
+          className="link-subtle text-[0.72rem] font-mono cursor-pointer"
         >
           go home
         </button>
@@ -239,9 +239,9 @@ export default function WritePage() {
       <div className="w-full max-w-2xl mx-auto flex items-center justify-between mb-8">
         <button
           onClick={() => router.push("/")}
-          className="text-xs font-mono text-muted hover:text-foreground transition-colors cursor-pointer"
+          className="link-subtle text-[0.72rem] font-mono cursor-pointer"
         >
-          jubel
+          pulp
         </button>
         <RoundIndicator
           current={session.currentRound}
@@ -252,7 +252,7 @@ export default function WritePage() {
 
       {/* Error */}
       {error && (
-        <div className="w-full max-w-2xl mx-auto mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm font-mono rounded">
+        <div className="w-full max-w-2xl mx-auto mb-6 px-4 py-3 bg-accent-light border border-accent-highlight text-accent-dark text-[0.82rem] font-mono rounded-sm">
           {error}
           <button
             onClick={() => setError(null)}
@@ -278,7 +278,7 @@ export default function WritePage() {
 
       {/* Loading: explosion */}
       {state === "exploding" && (
-        <Loading message="breaking your thinking apart..." />
+        <Loading message="pulping..." />
       )}
 
       {/* Explosion / Fill */}
@@ -290,7 +290,7 @@ export default function WritePage() {
           onProvocationResponse={handleProvocationResponse}
           onFreeformChange={handleFreeformChange}
           onNext={isFinalRound ? handleDraft : handleReExplode}
-          nextLabel={isFinalRound ? "Compose draft" : "Re-explode"}
+          nextLabel={isFinalRound ? "Press" : "Pulp again"}
           disabled={state === "explosion"}
         />
       )}

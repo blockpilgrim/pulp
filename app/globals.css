@@ -1,94 +1,258 @@
 @import "tailwindcss";
 
+/* ========== Custom Properties ========== */
 :root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
-  --muted: #78716c;
-  --border: #e7e5e4;
-  --accent: #c2410c;
-  --accent-light: #fff7ed;
-  --accent-border: #fb923c;
-  --surface: #ffffff;
+  /* Backgrounds */
+  --background: #f5f0e8;
+  --surface: #faf7f2;
+  --surface-hover: #f0ebe2;
+
+  /* Text */
+  --foreground: #2c2825;
+  --foreground-secondary: #4a4543;
+  --muted: #8a8279;
+  --muted-light: #b5ada4;
+
+  /* Accent — warm burnt sienna */
+  --accent: #b5451b;
+  --accent-dark: #8f3615;
+  --accent-light: #fcecd6;
+  --accent-highlight: #f9d89c;
+
+  /* Borders */
+  --border: #ddd5c9;
+  --border-light: #e8e2d8;
 }
 
+/* ========== Theme Bridge (Tailwind v4) ========== */
+/* Colors use `inline` — values resolve from :root where they're defined */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
   --color-muted: var(--muted);
+  --color-muted-light: var(--muted-light);
   --color-border: var(--border);
+  --color-border-light: var(--border-light);
   --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
   --color-accent-light: var(--accent-light);
-  --color-accent-border: var(--accent-border);
+  --color-accent-highlight: var(--accent-highlight);
   --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+}
+
+/* Fonts use non-inline @theme — generates :root CSS vars that resolve
+   lazily at use-site, where next/font's body-scoped vars are available */
+@theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-serif: var(--font-source-serif);
+}
+
+/* ========== Base ========== */
+html {
+  background: radial-gradient(ellipse at 50% 30%, var(--background) 0%, #ede7dc 100%);
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "kern" 1, "liga" 1;
+  position: relative;
+  min-height: 100%;
+}
+
+/* Paper texture — subtle SVG noise grain */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  z-index: 0;
+}
+
+/* Ensure page content sits above the texture overlay */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== Selection ========== */
+::selection {
+  background: var(--accent-highlight);
   color: var(--foreground);
 }
 
-/* Braindump textarea */
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-light);
+}
+
+/* ========== Typography: Braindump ========== */
 .braindump-textarea {
-  font-family: var(--font-serif);
+  font-family: var(--font-source-serif);
   font-size: 1.125rem;
-  line-height: 1.8;
+  line-height: 1.85;
   resize: none;
+  caret-color: var(--accent);
 }
 
 .braindump-textarea::placeholder {
-  color: var(--muted);
-  opacity: 0.6;
+  color: var(--muted-light);
+  font-style: italic;
 }
 
 .braindump-textarea:focus {
   outline: none;
 }
 
-/* Fragment text */
+/* ========== Typography: Fragments ========== */
 .fragment-text {
-  font-family: var(--font-serif);
+  font-family: var(--font-source-serif);
   font-size: 1.05rem;
-  line-height: 1.75;
+  line-height: 1.8;
+  color: var(--foreground);
 }
 
-/* Provocation */
+/* ========== Provocations: Highlighter Effect ========== */
 .provocation {
-  border-left: 3px solid var(--accent-border);
-  background: var(--accent-light);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--accent);
+  font-family: var(--font-geist-mono);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  color: var(--accent-dark);
+  font-style: italic;
+  padding: 0;
+  margin: 0.75rem 0;
 }
 
-/* Draft */
+.provocation-text {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 12%,
+    var(--accent-highlight) 12%,
+    var(--accent-highlight) 88%,
+    transparent 88%,
+    transparent 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0.1em 0.35em;
+  margin: 0 -0.35em;
+  border-radius: 0.15em 0.4em 0.3em 0.2em;
+}
+
+/* ========== Typography: Draft ========== */
 .draft-text {
-  font-family: var(--font-serif);
+  font-family: var(--font-source-serif);
   font-size: 1.1rem;
-  line-height: 1.85;
+  line-height: 1.9;
+  color: var(--foreground);
+  caret-color: var(--accent);
 }
 
-/* Response textarea */
+.draft-editable:focus {
+  outline: none;
+  box-shadow: -2px 0 0 0 rgba(181, 69, 27, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+/* ========== Response Textarea ========== */
 .response-textarea {
-  font-family: var(--font-serif);
+  font-family: var(--font-source-serif);
   font-size: 0.95rem;
-  line-height: 1.7;
+  line-height: 1.75;
   resize: none;
-  border: 1px dashed var(--border);
-  transition: border-color 0.2s;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0;
+  transition: border-color 0.25s ease;
+  padding: 0.5rem 0;
+  caret-color: var(--accent);
 }
 
 .response-textarea:focus {
   outline: none;
-  border-color: var(--accent-border);
+  border-bottom-color: var(--accent);
 }
 
-/* Animations */
+.response-textarea::placeholder {
+  color: var(--muted-light);
+  font-style: italic;
+}
+
+/* ========== Buttons ========== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.5rem;
+  font-family: var(--font-geist-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid var(--foreground);
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btn-primary:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ========== Links ========== */
+.link-subtle {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.link-subtle:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* ========== Animations ========== */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -98,7 +262,7 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .animate-slide-down {
@@ -108,7 +272,7 @@ body {
 /* Stagger children */
 .stagger-children > * {
   opacity: 0;
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
@@ -127,7 +291,21 @@ body {
 .stagger-children > *:nth-child(14) { animation-delay: 1040ms; }
 .stagger-children > *:nth-child(15) { animation-delay: 1120ms; }
 
-/* Pulse for loading */
+/* Loading */
+@keyframes loadingFade {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.8; }
+}
+
+.loading-dot {
+  width: 3px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: loadingFade 1.5s ease-in-out infinite;
+}
+
+/* Legacy pulse (used for initial loading) */
 @keyframes pulse-slow {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
@@ -135,9 +313,4 @@ body {
 
 .animate-pulse-slow {
   animation: pulse-slow 2s ease-in-out infinite;
-}
-
-/* Editable draft area */
-.draft-editable:focus {
-  outline: none;
 }

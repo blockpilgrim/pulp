@@ -56,16 +56,15 @@ export function ExplosionView({
       </div>
 
       {fillMode && (
-        <div className="mt-8 pt-6 border-t border-border">
-          <label className="text-xs font-mono text-muted uppercase tracking-widest block mb-3">
+        <div className="mt-8 pt-6 border-t border-border-light">
+          <label className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em] block mb-3">
             Anything else?
           </label>
           <textarea
             value={freeformValue}
             onChange={(e) => onFreeformChange(e.target.value)}
             placeholder="Add whatever else comes to mind..."
-            className="response-textarea w-full bg-transparent px-3 py-2 min-h-[80px] placeholder:text-muted/40"
-            style={{ fontFamily: "var(--font-serif)", fontSize: "0.95rem" }}
+            className="response-textarea w-full bg-transparent min-h-[80px]"
           />
         </div>
       )}
@@ -74,7 +73,7 @@ export function ExplosionView({
         <button
           onClick={onNext}
           disabled={disabled}
-          className="px-5 py-2.5 bg-foreground text-background text-sm font-mono disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80 transition-opacity cursor-pointer"
+          className="btn-primary"
         >
           {nextLabel}
         </button>

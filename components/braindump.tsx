@@ -36,17 +36,17 @@ export function Braindump({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        placeholder="Write freely. No structure needed. Just think out loud about your topic..."
-        className="braindump-textarea w-full bg-transparent px-0 py-4 min-h-[300px] placeholder:text-muted/50"
+        placeholder="Write freely. No structure needed. Just think out loud..."
+        className="braindump-textarea w-full bg-transparent px-0 py-4 min-h-[300px]"
       />
 
       <div className="flex justify-end mt-6 mb-8">
         <button
           onClick={onExplode}
           disabled={!canExplode || disabled}
-          className="px-5 py-2.5 bg-foreground text-background text-sm font-mono disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80 transition-opacity cursor-pointer"
+          className="btn-primary"
         >
-          Explode
+          Pulp
         </button>
       </div>
     </div>

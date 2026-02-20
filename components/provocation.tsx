@@ -24,25 +24,25 @@ export function Provocation({
   }, [response]);
 
   return (
-    <div className="my-3">
-      <div className="provocation px-4 py-2.5 rounded-sm">
-        {text}
-      </div>
+    <div className="my-4">
+      <p className="provocation">
+        <span className="provocation-text">{text}</span>
+      </p>
 
       {fillMode && (
-        <div className="mt-2 ml-4">
+        <div className="mt-2">
           <textarea
             ref={ref}
             value={response}
             onChange={(e) => onResponseChange(e.target.value)}
-            placeholder="respond here, or skip..."
-            className="response-textarea w-full bg-transparent px-3 py-2 min-h-[40px] text-sm placeholder:text-muted/40"
+            placeholder="..."
+            className="response-textarea w-full bg-transparent min-h-[40px]"
           />
         </div>
       )}
 
       {!fillMode && response && (
-        <div className="mt-2 ml-4 text-sm py-2 px-3 bg-surface rounded" style={{ fontFamily: "var(--font-serif)" }}>
+        <div className="mt-2 text-sm py-2 font-serif italic text-foreground-secondary">
           {response}
         </div>
       )}

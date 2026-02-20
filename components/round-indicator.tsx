@@ -12,14 +12,14 @@ export function RoundIndicator({
   const label = (() => {
     switch (state) {
       case "braindump":
-        return "braindump";
+        return "write";
       case "exploding":
-        return "breaking apart...";
+        return "pulping...";
       case "explosion":
       case "fill":
         return `round ${current} of ${max}`;
       case "drafting":
-        return "composing draft...";
+        return "pressing...";
       case "draft":
       case "edit":
         return "draft";
@@ -29,7 +29,7 @@ export function RoundIndicator({
   })();
 
   return (
-    <div className="text-xs font-mono text-muted uppercase tracking-widest">
+    <div className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em]">
       {label}
     </div>
   );

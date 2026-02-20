@@ -25,13 +25,13 @@ export function DraftView({
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <div className="text-xs font-mono text-muted uppercase tracking-widest">
-          {streaming ? "Drafting..." : "Your draft"}
+        <div className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em]">
+          {streaming ? "Pressing..." : "Your draft"}
         </div>
         {!streaming && (
           <button
             onClick={onBack}
-            className="text-xs font-mono text-muted hover:text-foreground transition-colors cursor-pointer"
+            className="link-subtle text-[0.72rem] font-mono cursor-pointer"
           >
             back to home
           </button>
@@ -44,7 +44,7 @@ export function DraftView({
           className="draft-text whitespace-pre-wrap py-4 min-h-[300px]"
         >
           {draft}
-          <span className="inline-block w-0.5 h-5 bg-accent animate-pulse-slow ml-0.5 align-text-bottom" />
+          <span className="inline-block w-[2px] h-[1.1em] bg-accent animate-pulse-slow ml-0.5 align-text-bottom" />
         </div>
       ) : (
         <textarea
