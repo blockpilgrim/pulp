@@ -1,7 +1,7 @@
 # App Concept
 
 > **Name: Pulp**
-> Alternatives if we revisit: Textuary, Writual, Undraft
+> The name works as a word — punchy, one syllable, evocative of raw material. The papermaking metaphor (raw pulp → pressed paper) loosely maps to the app's transformations but shouldn't be taken literally. The app's flow is cyclical; the metaphor is held loosely.
 
 ---
 
@@ -9,12 +9,17 @@
 
 Most AI writing tools start with AI output and let humans edit. This trains people to react to AI's ideas rather than develop their own. Over time, the human voice — and more importantly, the human *thinking* — erodes. The writer becomes an editor of machine-generated text rather than the originator of their own ideas.
 
+There's a subtler version of this problem too: even when AI writes *from* a human's thinking, the act of completely rewriting someone's words can feel like theft. The writer does the hard work of excavating their ideas, then watches their labor dissolve into someone else's prose. The better the output, the worse this can feel — because a mediocre rewrite is easy to reject, but a beautiful one written in someone else's voice is an uncanny valley of authorship.
+
 ## The Idea
 
-A writing tool that inverts the default AI-writing flow. The human writes first — raw, unstructured, stream-of-consciousness. The AI never writes *for* the human. Instead, it plays two distinct roles at two distinct phases:
+A writing tool that inverts the default AI-writing flow. The human writes first — raw, unstructured, stream-of-consciousness. The AI never writes *for* the human. Instead, it plays three distinct roles:
 
-1. **Thinking partner** — across multiple rounds, the AI helps the writer excavate their own thinking through gentle, curious provocations.
-2. **Writer** — only after the thinking is rich and deep does the AI compose a draft, translating raw thought into realized prose.
+1. **Thinking partner (Probe)** — across multiple rounds, the AI helps the writer excavate their own thinking through gentle, curious provocations.
+2. **Editor (Polish)** — the AI cleans up the writer's own words: fixes grammar, smooths rough edges, adds minimal connective tissue. The writer's sentences are the text. Authorship is unambiguous.
+3. **Writer (Press)** — the AI takes the writer's raw thinking and composes something new from it — finding the deeper structure, giving half-formed thoughts their full expression. Authorship is shared.
+
+Polish and Press are not a hierarchy. They are two equally valid transformations with different philosophies: Polish preserves the writer's voice exactly; Press translates it into something the writer couldn't have written alone. The writer chooses which they want, and can try both.
 
 The core principle: by the time AI writes anything substantial, it should be drawing on a rich body of the writer's own raw thinking — not filling a vacuum.
 
@@ -23,8 +28,14 @@ The core principle: by the time AI writes anything substantial, it should be dra
 ## The Flow
 
 ```
-[Write] → [Probe] → [Write more] → [Probe again] → ... → [Write draft] → [Edit]
+[Write] → [Probe] → [Write more] → [Polish or Press] → [Continue writing / Revert] → ...
 ```
+
+The flow is **cyclical, not linear**. There is no terminal state. After any transformation (Polish or Press), the writer can:
+- **Continue with it** — accept the output as their new working text and keep writing, probing, or transforming again.
+- **Revert** — discard the output and return to their raw text. Nothing is ever lost.
+
+Writing is iterative. A writer might: write raw → probe → write more → polish → continue → probe again → press → continue → write more → polish → done. Or they might write → press → done. The app supports both.
 
 Everything happens on a single continuous canvas — a TipTap rich text editor. There are no separate screens for writing vs. responding to provocations.
 
@@ -36,7 +47,7 @@ The user writes freely in the editor — stream of consciousness, no structure, 
 
 The user clicks "Probe." The AI reads everything the user has written and does two things:
 
-**Splits** the text at meaningful seams — not arbitrary line breaks, but the natural joints in the thinking: where one idea ends and another begins, where the tone shifts, where a new thread emerges. This reveals the hidden skeleton of the writer's thinking. Like pulping raw material into its fibers.
+**Splits** the text at meaningful seams — not arbitrary line breaks, but the natural joints in the thinking: where one idea ends and another begins, where the tone shifts, where a new thread emerges. This reveals the hidden skeleton of the writer's thinking.
 
 **Inserts provocations inline** between fragments, directly in the editor. These appear as dismissable annotation blocks (highlighter-styled, with an X button) nestled between the user's paragraphs. The user's text is never altered — provocations are inserted *around* it.
 
@@ -48,25 +59,28 @@ The user edits directly in the same editor — adding text, expanding ideas, or 
 
 The user can probe as many times as they want. Each probe re-reads all user text (skipping any remaining provocation nodes), finds the new shape of the thinking, and inserts fresh provocations. Old provocations are replaced.
 
-### 5. Write draft
+### 5. Polish or Press
 
-When ready, the user clicks "Write draft." The AI takes everything the user has written and presses it into a genuine first draft.
+When ready, the user chooses one of two transformations:
 
-This is NOT a reassembly of fragments with transitions glued in. This is real writing — the AI finds the deeper structure, draws out implications the writer sensed but didn't articulate, gives half-formed thoughts their full expression, and crafts prose with varied rhythm, an arc that builds, and sentences that breathe.
+**Polish** — the AI cleans up the writer's text while preserving their words, voice, and structure. Fixes grammar, smooths awkward phrasing, adds minimal connective tissue. The result should read like the writer's own writing on a good day. This is an intermediary step — not a final destination.
 
-The draft should make the writer say: "yes, THAT'S what I was trying to say."
+**Press** — the AI takes everything the user has written and composes something new from it. This is NOT a reassembly of fragments with transitions glued in. This is real writing — the AI finds the deeper structure, draws out implications the writer sensed but didn't articulate, gives half-formed thoughts their full expression, and crafts prose with varied rhythm, an arc that builds, and sentences that breathe. The output should make the writer say: "yes, THAT'S what I was trying to say."
 
-### 6. Edit
+### 6. Continue or Revert
 
-The draft streams in and becomes editable when complete. The writer can refine, copy, or download as .txt.
+The output streams in and becomes editable when complete. The writer can:
+- **Continue with this** — the output becomes their new working text. They return to the canvas and can keep writing, probe, polish, or press again.
+- **Revert** — discard the output and return to their original raw text. The raw text is always preserved until the writer explicitly moves on.
+- **Copy or download** — export the current text at any point.
 
 ---
 
-## The Two AI Roles
+## The Three AI Roles
 
 These are fundamentally different jobs with different tones, and they must not bleed into each other.
 
-### Role 1: Thinking Partner (Pulp rounds)
+### Role 1: Thinking Partner (Probe)
 
 The AI is not a coach, not a therapist, not a know-it-all. It is simply, genuinely curious about what this person is trying to say.
 
@@ -90,13 +104,38 @@ The AI is not a coach, not a therapist, not a know-it-all. It is simply, genuine
 
 **The spirit:** The AI is not ahead of the writer. It is beside them, pointing at things in their own thinking they might want to look at more closely. An invitation, never a judgment. Curious, never critical.
 
-**On re-pulps (round 2+):** The AI re-reads all material as one piece and finds the new shape. It doesn't just tack new provocations onto old structure. It notices where the thinking has deepened, where new doors opened, where something wants to be followed further.
+**On re-probes (round 2+):** The AI re-reads all material as one piece and finds the new shape. It doesn't just tack new provocations onto old structure. It notices where the thinking has deepened, where new doors opened, where something wants to be followed further.
 
 **Fragments are preserved verbatim.** The AI never rewrites, edits, or "improves" the user's words during this phase.
 
-### Role 2: Writer (Press)
+### Role 2: Editor (Polish)
 
-Only now does the AI write. And because the pulp rounds did their job, it has rich material to work with.
+The AI is an invisible copy editor. The writer's sentences are the text. The AI works in service of them, not in place of them.
+
+**The job:** Clean up the writer's words without replacing them.
+
+- Fix grammar, spelling, and punctuation.
+- Smooth awkward phrasing — but only where it genuinely trips the reader. Rough edges that carry voice or energy should stay.
+- Add minimal connective tissue between ideas where the gaps are jarring. A word, a short phrase, a transition sentence at most. Never a whole paragraph.
+- Tighten: cut redundancy, trim filler words, collapse run-ons where they don't serve rhythm.
+- Preserve paragraph structure. Don't reorganize sections or impose a new arc.
+
+**The balance:**
+- Every sentence in the output should be recognizably the writer's. If they read it and can't tell what changed, the AI has done its job perfectly.
+- The writer's voice — however rough, informal, or idiosyncratic — is not a problem to fix. It's the point.
+- Do NOT elevate register, add flourishes, or make the prose "better." Make it cleaner.
+- Zero creative liberty. No ideas, implications, or conclusions the writer didn't write.
+
+**Must not:**
+- Restructure or reorder paragraphs
+- Add headers, section breaks, or organizational scaffolding
+- Introduce metaphors, imagery, or turns of phrase the writer didn't use
+- Change the writer's tone
+- Use AI-essay phrases
+
+### Role 3: Writer (Press)
+
+Only now does the AI write. And because the probe rounds did their job, it has rich material to work with.
 
 **The job:** Translate raw thought into realized prose.
 
@@ -112,7 +151,7 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 - The voice should feel like a refined, more articulate version of the writer's voice — not generic AI voice. Match their register (earnest, sardonic, tender, analytical) but elevate the execution.
 - Structure should feel inevitable, not imposed.
 
-**The philosophy:** Users come to this app to spend less work on technical prose and more work on thinking and feeling. The AI's job in the draft phase is to flesh out the beauty that users would have otherwise failed to bring to fruition. Raw words are the input, not the output.
+**The philosophy:** Users come to this app to spend less work on technical prose and more work on thinking and feeling. The AI's job in the Press phase is to flesh out the beauty that users would have otherwise failed to bring to fruition. Raw words are the input, not the output.
 
 **Must not:**
 - Simply string answers together with transitions
@@ -124,6 +163,16 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 
 ---
 
+## The Authorship Tension
+
+There's an intentional tension between Polish and Press. Polish preserves authorship completely — the writer reads the output and recognizes every sentence as theirs. Press shares authorship — the writer's ideas, the AI's prose. Both are valid. The key insight is that this should be a *choice the writer makes*, not something that happens to them.
+
+The parallel to Theodore Twombly's job in the film "Her" is instructive. Theodore takes other people's raw emotional material and writes beautiful letters in their voice. Press does essentially the same thing. The difference: Theodore's clients skip the hard work of reflection. Pulp's probe rounds ensure the writer *earns* the output — they've done the thinking, the wrestling, the excavation. By the time the AI writes, it's working from genuine raw material, not guessing.
+
+Polish exists because sometimes the writer doesn't want a Theodore. They want their own words, cleaned up. The app respects both needs equally.
+
+---
+
 ## Design Principles
 
 - **Monochrome + one accent.** Black/white/gray base. Provocations in a single warm accent color (currently burnt orange).
@@ -131,6 +180,8 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 - **Inline provocations.** Provocations appear as dismissable annotation blocks inside the editor — highlighter-styled, with an X to dismiss. They live between user paragraphs, never displacing the user's text.
 - **Minimal chrome.** No sidebars, no toolbars, no menus. The writing surface dominates. The blank page should feel peaceful and inviting.
 - **Progressive disclosure.** Only show what's relevant to the current state.
+- **Cyclical flow.** Nothing is a dead end. The writer can always go back to writing after any transformation. Polish and Press are waypoints, not destinations.
+- **Revertibility.** Raw text is always preserved. The writer can discard any AI output and return to where they were. AI's words are an offer, never a replacement.
 - **Smooth transitions.** Animate between states — fragments easing apart, provocations fading in.
 
 ---
@@ -150,41 +201,50 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 ```
 app/
   page.tsx                    # Landing — session list + "Start writing"
-  write/[id]/page.tsx         # Orchestrator (Canvas for writing/probing, DraftView for drafting/draft)
+  write/[id]/page.tsx         # Orchestrator (Canvas for writing/probing, DraftView for polish/press)
   api/pulp/route.ts           # Probe endpoint (returns fragments + provocations as JSON)
-  api/draft/route.ts          # Draft endpoint (streams prose)
+  api/draft/route.ts          # Polish + Press endpoint (streams prose, mode param selects prompt)
 components/
-  canvas.tsx                  # TipTap editor + toolbar (write, probe, draft buttons)
+  canvas.tsx                  # TipTap editor + toolbar (probe, polish, press buttons)
   provocation-node.tsx        # React node view for inline provocation blocks
-  draft-view.tsx              # Streaming + editable draft display
+  draft-view.tsx              # Streaming + editable output display (polish/press results)
   round-indicator.tsx         # Current state label
   loading.tsx                 # Loading animation
 lib/
-  types.ts                    # Session, PulpResponse types
+  types.ts                    # Session, DraftMode, PulpResponse types
   provocation-extension.ts    # Custom TipTap node extension for provocations
-  prompts.ts                  # All AI system/user prompts
+  prompts.ts                  # All AI system/user prompts (probe, polish, press)
   store.ts                    # useSessions / useSession hooks + localStorage
   utils.ts                    # ID generation, filename utils
 ```
 
 ### Data Model
 ```typescript
+type DraftMode = "polish" | "draft";
+
 Session {
   id, title, direction, createdAt, updatedAt,
-  state: "writing" | "probing" | "drafting" | "draft",
-  content: string,            // flat user text, persisted to localStorage
+  state: "writing" | "probing" | "polishing" | "polish" | "drafting" | "draft",
+  content: string,            // current working text, persisted to localStorage
   probeCount: number,         // how many times the user has probed
-  draft: string | null
+  draft: string | null,       // polish/press output
+  draftMode: DraftMode | null, // which mode produced the current output
+  rawContent: string | null   // pre-transformation text (for revert)
 }
 ```
 
 Provocations are ephemeral — they exist only as TipTap nodes in the editor's in-memory document. On refresh, the user gets their text back and can probe again. The API response shape (`PulpResponse` with `fragments[]` and `provocations[]`) is unchanged.
 
+### Action Language
+- User-facing toolbar: **Probe** · **Polish** · **Press**
+- After output: **continue with this** · **revert** · copy · download · back to home
+- Internal API: `/api/pulp` (probe), `/api/draft?mode=polish|draft` (polish/press)
+
 ---
 
 ## Open Questions
 
-- **App name.** Settled on **Pulp**. Alternatives saved: Textuary, Writual, Undraft.
-- **Action language.** User-facing labels: "Probe" / "Write draft". Internal API endpoint is still `/api/pulp`.
-- **Post-draft AI assistance.** What does this look like? Inline editing? Selection-based refinement? A second write-to-draft cycle on the draft itself?
+- **Post-output AI assistance.** After Polish or Press, could there be inline refinement? Selection-based editing? This is separate from the cyclical flow (which already lets you keep iterating).
 - **Persistence.** Currently localStorage only. If this becomes a real product, what's the storage story?
+- **Version history.** The cyclical flow means a session could go through many transformations. Should there be a way to see or restore previous versions beyond the immediate revert?
+- **Mobile experience.** Three toolbar buttons + the editor — does this work well on small screens?
