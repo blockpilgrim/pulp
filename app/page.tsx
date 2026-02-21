@@ -85,7 +85,7 @@ export default function Home() {
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-[0.95rem] font-serif">
-                      {s.title || truncate(s.braindump, 60) || "Untitled"}
+                      {s.title || truncate(s.content, 60) || "Untitled"}
                     </div>
                     <div className="text-[0.72rem] text-muted font-mono tracking-wide mt-0.5">
                       {new Date(s.updatedAt).toLocaleDateString(undefined, {
@@ -93,13 +93,10 @@ export default function Home() {
                         day: "numeric",
                       })}
                       {" · "}
-                      {s.state === "braindump" && "writing"}
-                      {s.state === "pulped" && `round ${s.currentRound}`}
-                      {s.state === "fill" && `round ${s.currentRound}`}
-                      {s.state === "draft" && "draft"}
-                      {s.state === "edit" && "editing"}
-                      {s.state === "pulping" && "thinking..."}
+                      {s.state === "writing" && (s.probeCount > 0 ? `probed ${s.probeCount}x` : "writing")}
+                      {s.state === "probing" && "thinking..."}
                       {s.state === "drafting" && "drafting..."}
+                      {s.state === "draft" && "draft"}
                     </div>
                   </div>
                   <button

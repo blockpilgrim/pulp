@@ -5,8 +5,7 @@ A writing tool that inverts the AI-writing flow. You write raw, AI provokes deep
 **write raw → pulp → press**
 
 ## How it works
-
-1. **Write** — braindump your raw thoughts, stream of consciousness
+h1. **Write** — braindump your raw thoughts, stream of jewhjuehjejkykyconsciousness
 2. **Pulp** — AI splits your text into fragments and inserts provocations: tiny nudges that push your thinking further
 3. **Fill** — respond to provocations, add more, pulp again as many times as you want
 4. **Press** — AI composes a draft from everything you've written, finding the deeper structure in your thinking

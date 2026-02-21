@@ -102,30 +102,71 @@ body > * {
   background: var(--muted-light);
 }
 
-/* ========== Typography: Braindump ========== */
-.braindump-textarea {
+/* ========== TipTap Editor ========== */
+.tiptap-editor-wrapper .tiptap {
   font-family: var(--font-source-serif);
   font-size: 1.125rem;
   line-height: 1.85;
-  resize: none;
+  color: var(--foreground);
   caret-color: var(--accent);
+  min-height: 300px;
+  padding: 1rem 0;
 }
 
-.braindump-textarea::placeholder {
-  color: var(--muted-light);
-  font-style: italic;
-}
-
-.braindump-textarea:focus {
+.tiptap-editor-wrapper .tiptap:focus {
   outline: none;
 }
 
-/* ========== Typography: Fragments ========== */
-.fragment-text {
-  font-family: var(--font-source-serif);
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: var(--foreground);
+.tiptap-editor-wrapper .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--muted-light);
+  font-style: italic;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap-editor-wrapper .tiptap p {
+  margin: 0 0 1em 0;
+}
+
+.tiptap-editor-wrapper .tiptap p:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== Provocation Blocks (inline in editor) ========== */
+.provocation-block {
+  margin: 0.75rem 0;
+  user-select: none;
+}
+
+.provocation-block-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.provocation-dismiss {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--muted-light);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 0.15s ease, background 0.15s ease;
+  margin-top: 0.1em;
+}
+
+.provocation-dismiss:hover {
+  color: var(--accent);
+  background: var(--accent-light);
 }
 
 /* ========== Provocations: Highlighter Effect ========== */
@@ -174,29 +215,6 @@ body > * {
   transition: box-shadow 0.3s ease;
 }
 
-/* ========== Response Textarea ========== */
-.response-textarea {
-  font-family: var(--font-source-serif);
-  font-size: 0.95rem;
-  line-height: 1.75;
-  resize: none;
-  border: none;
-  border-bottom: 1px solid var(--border-light);
-  border-radius: 0;
-  transition: border-color 0.25s ease;
-  padding: 0.5rem 0;
-  caret-color: var(--accent);
-}
-
-.response-textarea:focus {
-  outline: none;
-  border-bottom-color: var(--accent);
-}
-
-.response-textarea::placeholder {
-  color: var(--muted-light);
-  font-style: italic;
-}
 
 /* ========== Buttons ========== */
 .btn-primary {
@@ -272,27 +290,6 @@ body > * {
   animation: slideDown 0.5s ease-out forwards;
 }
 
-/* Stagger children */
-.stagger-children > * {
-  opacity: 0;
-  animation: fadeIn 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-}
-
-.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
-.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
-.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
-.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
-.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
-.stagger-children > *:nth-child(7) { animation-delay: 480ms; }
-.stagger-children > *:nth-child(8) { animation-delay: 560ms; }
-.stagger-children > *:nth-child(9) { animation-delay: 640ms; }
-.stagger-children > *:nth-child(10) { animation-delay: 720ms; }
-.stagger-children > *:nth-child(11) { animation-delay: 800ms; }
-.stagger-children > *:nth-child(12) { animation-delay: 880ms; }
-.stagger-children > *:nth-child(13) { animation-delay: 960ms; }
-.stagger-children > *:nth-child(14) { animation-delay: 1040ms; }
-.stagger-children > *:nth-child(15) { animation-delay: 1120ms; }
 
 /* Loading */
 @keyframes loadingFade {
@@ -320,14 +317,9 @@ body > * {
 
 /* ========== Mobile ========== */
 @media (max-width: 640px) {
-  .braindump-textarea {
+  .tiptap-editor-wrapper .tiptap {
     font-size: 1rem;
     line-height: 1.75;
-  }
-
-  .fragment-text {
-    font-size: 0.95rem;
-    line-height: 1.7;
   }
 
   .draft-text {

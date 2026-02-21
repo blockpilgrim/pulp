@@ -1,32 +1,8 @@
 export type SessionState =
-  | "braindump"
-  | "pulping"
-  | "pulped"
-  | "fill"
+  | "writing"
+  | "probing"
   | "drafting"
-  | "draft"
-  | "edit";
-
-export type Fragment = {
-  id: string;
-  text: string;
-  source: "braindump" | "fill";
-  roundCreated: number;
-};
-
-export type Provocation = {
-  id: string;
-  text: string;
-  afterFragmentId: string;
-  response: string;
-};
-
-export type Round = {
-  number: number;
-  fragments: Fragment[];
-  provocations: Provocation[];
-  freeformAddition: string;
-};
+  | "draft";
 
 export type Session = {
   id: string;
@@ -35,10 +11,8 @@ export type Session = {
   createdAt: number;
   updatedAt: number;
   state: SessionState;
-  braindump: string;
-  rounds: Round[];
-  currentRound: number;
-  maxRounds: number;
+  content: string;
+  probeCount: number;
   draft: string | null;
 };
 

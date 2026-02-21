@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import type { Session, SessionState, Round } from "./types";
+import type { Session, SessionState } from "./types";
 import { generateId } from "./utils";
 
 const STORAGE_KEY = "pulp_sessions";
@@ -17,15 +17,72 @@ function migrateStorageKey() {
 }
 
 function migrateSession(s: Record<string, unknown>): Session {
-  // Migrate old state names: exploding → pulping, explosion → pulped
+  // Already new format
+  if ("content" in s && typeof s.content === "string" && !("braindump" in s)) {
+    const stateMap: Record<string, SessionState> = {
+      writing: "writing",
+      probing: "probing",
+      drafting: "drafting",
+      draft: "draft",
+    };
+    const state = stateMap[s.state as string] || "writing";
+    return { ...s, state } as Session;
+  }
+
+  // Migrate from old format (has braindump + rounds)
+  const old = s as Record<string, unknown>;
+  const braindump = (old.braindump as string) || "";
+  const rounds = (old.rounds as Array<{
+    fragments: { text: string }[];
+    provocations: { response: string }[];
+    freeformAddition: string;
+  }>) || [];
+
+  // Extract all user text from old rounds
+  const parts: string[] = [];
+  for (const round of rounds) {
+    for (const f of round.fragments) {
+      parts.push(f.text);
+    }
+    for (const p of round.provocations) {
+      if (p.response?.trim()) {
+        parts.push(p.response);
+      }
+    }
+    if (round.freeformAddition?.trim()) {
+      parts.push(round.freeformAddition);
+    }
+  }
+  const content = parts.length > 0 ? parts.join("\n\n") : braindump;
+
+  // Map old states to new states
+  const oldState = old.state as string;
   const stateMap: Record<string, SessionState> = {
-    exploding: "pulping",
-    explosion: "pulped",
+    braindump: "writing",
+    pulping: "writing", // reset mid-API states
+    pulped: "writing",
+    fill: "writing",
+    exploding: "writing",
+    explosion: "writing",
+    drafting: "writing",
+    draft: "draft",
+    edit: "draft",
   };
-  const state = stateMap[s.state as string] || s.state;
-  // Add direction field if missing (pre-v1 sessions)
-  const direction = typeof s.direction === "string" ? s.direction : "";
-  return { ...s, state, direction } as Session;
+  const state = stateMap[oldState] || "writing";
+  const probeCount = (old.currentRound as number) || 0;
+  const direction = typeof old.direction === "string" ? old.direction : "";
+
+  return {
+    id: old.id as string,
+    title: old.title as string || "",
+    direction,
+    createdAt: old.createdAt as number || Date.now(),
+    updatedAt: old.updatedAt as number || Date.now(),
+    state,
+    content,
+    probeCount,
+    draft: (old.draft as string) || null,
+  };
 }
 
 function loadSessions(): Session[] {
@@ -33,7 +90,7 @@ function loadSessions(): Session[] {
   try {
     migrateStorageKey();
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Session[]).map(migrateSession) : [];
+    return raw ? (JSON.parse(raw) as Record<string, unknown>[]).map(migrateSession) : [];
   } catch {
     return [];
   }
@@ -82,11 +139,9 @@ export function useSessions() {
       direction: direction || "",
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      state: "braindump",
-      braindump: "",
-      rounds: [],
-      currentRound: 0,
-      maxRounds: 2,
+      state: "writing",
+      content: "",
+      probeCount: 0,
       draft: null,
     };
     const next = [session, ...loadSessions()];
@@ -138,35 +193,11 @@ export function useSession(id: string) {
     [update]
   );
 
-  const addRound = useCallback(
-    (round: Round) => {
-      if (!session) return;
-      update({
-        rounds: [...session.rounds, round],
-        currentRound: round.number,
-      });
-    },
-    [session, update]
-  );
-
-  const updateRound = useCallback(
-    (roundNumber: number, updates: Partial<Round>) => {
-      if (!session) return;
-      const rounds = session.rounds.map((r) =>
-        r.number === roundNumber ? { ...r, ...updates } : r
-      );
-      update({ rounds });
-    },
-    [session, update]
-  );
-
   return {
     session,
     loaded,
     update,
     setState,
-    addRound,
-    updateRound,
     deleteSession: () => deleteSession(id),
   };
 }

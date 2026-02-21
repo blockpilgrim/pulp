@@ -23,44 +23,42 @@ The core principle: by the time AI writes anything substantial, it should be dra
 ## The Flow
 
 ```
-[Write] → [Pulp] → [Fill] → [Pulp again] → [Fill] → ... → [Press] → [Edit]
+[Write] → [Probe] → [Write more] → [Probe again] → ... → [Write draft] → [Edit]
 ```
+
+Everything happens on a single continuous canvas — a TipTap rich text editor. There are no separate screens for writing vs. responding to provocations.
 
 ### 1. Write
 
-Blank canvas. The user writes freely — stream of consciousness, no structure, no pressure to be coherent. A single textarea and nothing else. The app gets out of the way.
+The user writes freely in the editor — stream of consciousness, no structure, no pressure to be coherent. The editor and nothing else. The app gets out of the way.
 
-### 2. Pulp (AI round)
+### 2. Probe (AI round)
 
-The AI reads everything the user has written and does two things:
+The user clicks "Probe." The AI reads everything the user has written and does two things:
 
 **Splits** the text at meaningful seams — not arbitrary line breaks, but the natural joints in the thinking: where one idea ends and another begins, where the tone shifts, where a new thread emerges. This reveals the hidden skeleton of the writer's thinking. Like pulping raw material into its fibers.
 
-**Inserts provocations** between fragments. These are the heart of the app.
+**Inserts provocations inline** between fragments, directly in the editor. These appear as dismissable annotation blocks (highlighter-styled, with an X button) nestled between the user's paragraphs. The user's text is never altered — provocations are inserted *around* it.
 
-### 3. Fill (Human round)
+### 3. Write more (Human round)
 
-The user responds to whichever provocations resonate, ignores the rest, and adds whatever else comes to mind. Still in their own words, still raw. The provocations are invitations — the user is never obligated to follow them.
+The user edits directly in the same editor — adding text, expanding ideas, or simply dismissing provocations that don't resonate. There is no separate "response" UI. The user just keeps writing. Provocations are invitations; the user is never obligated to follow them.
 
-### 4. Pulp again (AI round)
+### 4. Probe again (AI round)
 
-The AI re-reads *everything* — original fragments plus new material — with fresh eyes. It doesn't just append new provocations to old structure. It restructures entirely, finding the new shape of the thinking: where it has deepened, where new doors opened, where something wants to be followed further.
+The user can probe as many times as they want. Each probe re-reads all user text (skipping any remaining provocation nodes), finds the new shape of the thinking, and inserts fresh provocations. Old provocations are replaced.
 
-### 5. Repeat
+### 5. Write draft
 
-Default: 2 pulp/fill cycles. The number could be configurable. Each round should produce diminishing returns — if the thinking feels fully excavated after one round, the user can skip ahead to press.
-
-### 6. Press
-
-This is where the magic happens. The AI takes everything the writer produced across all rounds — raw writing, responses to provocations, freeform additions — and presses it into a genuine first draft.
+When ready, the user clicks "Write draft." The AI takes everything the user has written and presses it into a genuine first draft.
 
 This is NOT a reassembly of fragments with transitions glued in. This is real writing — the AI finds the deeper structure, draws out implications the writer sensed but didn't articulate, gives half-formed thoughts their full expression, and crafts prose with varied rhythm, an arc that builds, and sentences that breathe.
 
 The draft should make the writer say: "yes, THAT'S what I was trying to say."
 
-### 7. Edit
+### 6. Edit
 
-Free-form editing. The foundation has been set by the human's thinking; now the writer can refine, restructure, or request further AI assistance as needed.
+The draft streams in and becomes editable when complete. The writer can refine, copy, or download as .txt.
 
 ---
 
@@ -130,7 +128,7 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 
 - **Monochrome + one accent.** Black/white/gray base. Provocations in a single warm accent color (currently burnt orange).
 - **Typographic hierarchy.** User text in a warm serif. Provocations in a contrasting mono/sans. Clear visual separation so the writer always knows what's theirs and what's a prompt.
-- **Diff-like provocation display.** Provocations appear like inserted lines — left-border colored bar, slightly indented, lighter background.
+- **Inline provocations.** Provocations appear as dismissable annotation blocks inside the editor — highlighter-styled, with an X to dismiss. They live between user paragraphs, never displacing the user's text.
 - **Minimal chrome.** No sidebars, no toolbars, no menus. The writing surface dominates. The blank page should feel peaceful and inviting.
 - **Progressive disclosure.** Only show what's relevant to the current state.
 - **Smooth transitions.** Animate between states — fragments easing apart, provocations fading in.
@@ -143,6 +141,7 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 - Next.js 16 (App Router, Turbopack)
 - React 19, TypeScript
 - Tailwind CSS v4
+- TipTap rich text editor (@tiptap/react, @tiptap/starter-kit, @tiptap/extension-placeholder)
 - Anthropic Claude API via Vercel AI SDK v6
 - Model: `claude-sonnet-4-6`
 - Client-side state with localStorage persistence (no database)
@@ -151,50 +150,41 @@ Only now does the AI write. And because the pulp rounds did their job, it has ri
 ```
 app/
   page.tsx                    # Landing — session list + "Start writing"
-  write/[id]/page.tsx         # Main writing interface (orchestrates all states)
-  api/explode/route.ts        # Explosion endpoint (returns fragments + provocations as JSON)
+  write/[id]/page.tsx         # Orchestrator (Canvas for writing/probing, DraftView for drafting/draft)
+  api/pulp/route.ts           # Probe endpoint (returns fragments + provocations as JSON)
   api/draft/route.ts          # Draft endpoint (streams prose)
 components/
-  braindump.tsx               # Full-screen textarea
-  explosion-view.tsx          # Interleaved fragments + provocations
-  provocation.tsx             # Single provocation with response textarea
-  fragment.tsx                # Single user fragment
+  canvas.tsx                  # TipTap editor + toolbar (write, probe, draft buttons)
+  provocation-node.tsx        # React node view for inline provocation blocks
   draft-view.tsx              # Streaming + editable draft display
   round-indicator.tsx         # Current state label
   loading.tsx                 # Loading animation
 lib/
-  types.ts                    # Session, Fragment, Provocation, Round types
+  types.ts                    # Session, PulpResponse types
+  provocation-extension.ts    # Custom TipTap node extension for provocations
   prompts.ts                  # All AI system/user prompts
   store.ts                    # useSessions / useSession hooks + localStorage
-  utils.ts                    # ID generation, text aggregation
+  utils.ts                    # ID generation, filename utils
 ```
 
 ### Data Model
 ```typescript
 Session {
-  id, title, createdAt, updatedAt,
-  state: "braindump" | "exploding" | "explosion" | "fill" | "drafting" | "draft" | "edit",
-  braindump: string,
-  rounds: Round[],
-  currentRound, maxRounds (default: 2),
+  id, title, direction, createdAt, updatedAt,
+  state: "writing" | "probing" | "drafting" | "draft",
+  content: string,            // flat user text, persisted to localStorage
+  probeCount: number,         // how many times the user has probed
   draft: string | null
 }
-
-Round {
-  number,
-  fragments: Fragment[],        // verbatim user text with IDs
-  provocations: Provocation[],  // AI provocations with response fields
-  freeformAddition: string      // user's additional freeform text
-}
 ```
+
+Provocations are ephemeral — they exist only as TipTap nodes in the editor's in-memory document. On refresh, the user gets their text back and can probe again. The API response shape (`PulpResponse` with `fragments[]` and `provocations[]`) is unchanged.
 
 ---
 
 ## Open Questions
 
 - **App name.** Settled on **Pulp**. Alternatives saved: Textuary, Writual, Undraft.
-- **Action language.** Settled on **Pulp** / **Pulp again** / **Fill** / **Press**. The metaphor extends from papermaking: raw material gets pulped (broken into fibers), then pressed into paper. "Pulp" = AI breaks apart and provokes. "Press" = AI composes the draft. Note: internal code still uses the old terms (explode, explosion, etc.) in variable names, filenames, and state values — only user-facing labels have been updated.
-- **Number of rounds.** Currently fixed at 2. Should this be user-configurable? Should the user be able to skip ahead to draft at any point?
-- **Post-draft AI assistance.** The spec mentions "further AI assistance" after the draft. What does this look like? Inline editing? Selection-based refinement? A second braindump-to-draft cycle on the draft itself?
-- **Sharing/export.** No current mechanism for exporting the final draft.
+- **Action language.** User-facing labels: "Probe" / "Write draft". Internal API endpoint is still `/api/pulp`.
+- **Post-draft AI assistance.** What does this look like? Inline editing? Selection-based refinement? A second write-to-draft cycle on the draft itself?
 - **Persistence.** Currently localStorage only. If this becomes a real product, what's the storage story?

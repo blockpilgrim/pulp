@@ -1,25 +1,21 @@
 "use client";
 
 export function RoundIndicator({
-  current,
+  probeCount,
   state,
 }: {
-  current: number;
+  probeCount: number;
   state: string;
 }) {
   const label = (() => {
     switch (state) {
-      case "braindump":
-        return "write";
-      case "pulping":
+      case "writing":
+        return probeCount > 0 ? `probed ${probeCount}x` : "write";
+      case "probing":
         return "thinking...";
-      case "pulped":
-      case "fill":
-        return `round ${current}`;
       case "drafting":
         return "drafting...";
       case "draft":
-      case "edit":
         return "draft";
       default:
         return "";
