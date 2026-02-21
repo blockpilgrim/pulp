@@ -104,15 +104,18 @@ function loadSessions(): Session[] {
   }
 }
 
+let _lsAvailable: boolean | null = null;
 function isLocalStorageAvailable(): boolean {
+  if (_lsAvailable !== null) return _lsAvailable;
   try {
     const test = "__pulp_test__";
     localStorage.setItem(test, "1");
     localStorage.removeItem(test);
-    return true;
+    _lsAvailable = true;
   } catch {
-    return false;
+    _lsAvailable = false;
   }
+  return _lsAvailable;
 }
 
 function saveSessions(sessions: Session[]) {
@@ -135,11 +138,6 @@ export function useSessions() {
     setLoaded(true);
   }, []);
 
-  const persist = useCallback((next: Session[]) => {
-    setSessions(next);
-    saveSessions(next);
-  }, []);
-
   const createSession = useCallback((direction?: string): Session => {
     const session: Session = {
       id: generateId(),
@@ -154,29 +152,36 @@ export function useSessions() {
       draftMode: null,
       rawContent: null,
     };
-    const next = [session, ...loadSessions()];
-    persist(next);
+    setSessions(prev => {
+      const next = [session, ...prev];
+      saveSessions(next);
+      return next;
+    });
     return session;
-  }, [persist]);
+  }, []);
 
   const updateSession = useCallback(
     (id: string, updates: Partial<Session>) => {
-      const current = loadSessions();
-      const next = current.map((s) =>
-        s.id === id ? { ...s, ...updates, updatedAt: Date.now() } : s
-      );
-      persist(next);
-      return next.find((s) => s.id === id)!;
+      setSessions(prev => {
+        const next = prev.map((s) =>
+          s.id === id ? { ...s, ...updates, updatedAt: Date.now() } : s
+        );
+        saveSessions(next);
+        return next;
+      });
     },
-    [persist]
+    []
   );
 
   const deleteSession = useCallback(
     (id: string) => {
-      const next = loadSessions().filter((s) => s.id !== id);
-      persist(next);
+      setSessions(prev => {
+        const next = prev.filter((s) => s.id !== id);
+        saveSessions(next);
+        return next;
+      });
     },
-    [persist]
+    []
   );
 
   const getSession = useCallback(

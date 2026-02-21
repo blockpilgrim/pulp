@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { useSession } from "@/lib/store";
 import { sanitizeFilename, downloadAsTxt } from "@/lib/utils";
 import { getApiKey } from "@/lib/api-key";
@@ -44,10 +44,18 @@ export default function WritePage() {
     }
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // Clean up debounce timer on unmount
+  useEffect(() => () => clearTimeout(saveTimeoutRef.current), []);
+
   const handleContentChange = useCallback(
     (text: string) => {
       if (!session) return;
-      update({ content: text });
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = setTimeout(() => {
+        update({ content: text });
+      }, 500);
     },
     [session, update]
   );
@@ -194,6 +202,25 @@ export default function WritePage() {
     setProvocationsData(null);
   }, [session, update]);
 
+  const handleDraftChange = useCallback(
+    (v: string) => {
+      setDraftText(v);
+      if (!streaming) {
+        update({ draft: v });
+      }
+    },
+    [streaming, update]
+  );
+
+  const handleBack = useCallback(() => router.push("/"), [router]);
+
+  const handleDownload = useCallback(() => {
+    if (!session) return;
+    const title = session.title || "pulp-draft";
+    const date = new Date().toISOString().split("T")[0];
+    downloadAsTxt(draftText, `${sanitizeFilename(title)}-${date}.txt`);
+  }, [session, draftText]);
+
   if (!loaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -268,20 +295,11 @@ export default function WritePage() {
           draft={draftText}
           streaming={streaming}
           mode={session.draftMode || "draft"}
-          onDraftChange={(v) => {
-            setDraftText(v);
-            if (!streaming) {
-              update({ draft: v });
-            }
-          }}
+          onDraftChange={handleDraftChange}
           onContinue={handleContinue}
           onRevert={handleRevert}
-          onBack={() => router.push("/")}
-          onDownload={() => {
-            const title = session.title || "pulp-draft";
-            const date = new Date().toISOString().split("T")[0];
-            downloadAsTxt(draftText, `${sanitizeFilename(title)}-${date}.txt`);
-          }}
+          onBack={handleBack}
+          onDownload={handleDownload}
         />
       )}
     </div>

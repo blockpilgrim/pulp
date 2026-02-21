@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
 import { DRAFT_SYSTEM, DRAFT_USER, POLISH_SYSTEM, POLISH_USER } from "@/lib/prompts";
+import { errorResponse } from "@/lib/api-errors";
 import type { DraftMode } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -51,29 +52,7 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    if (message.includes("401") || message.includes("authentication") || message.includes("invalid x-api-key")) {
-      return new Response(JSON.stringify({ error: "Invalid API key", code: "auth_error" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-    if (message.includes("429") || message.includes("rate")) {
-      return new Response(JSON.stringify({ error: "Rate limited — try again in a moment", code: "rate_limit" }), {
-        status: 429,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-    if (message.includes("529") || message.includes("overloaded")) {
-      return new Response(JSON.stringify({ error: "Anthropic is overloaded — try again shortly", code: "overloaded" }), {
-        status: 529,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
     console.error("Draft API error");
-    return new Response(JSON.stringify({ error: message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return errorResponse(err);
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { generateText } from "ai";
 import { PULP_SYSTEM, PULP_USER } from "@/lib/prompts";
+import { errorResponse } from "@/lib/api-errors";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,17 +45,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(parsed);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    if (message.includes("401") || message.includes("authentication") || message.includes("invalid x-api-key")) {
-      return NextResponse.json({ error: "Invalid API key", code: "auth_error" }, { status: 401 });
-    }
-    if (message.includes("429") || message.includes("rate")) {
-      return NextResponse.json({ error: "Rate limited — try again in a moment", code: "rate_limit" }, { status: 429 });
-    }
-    if (message.includes("529") || message.includes("overloaded")) {
-      return NextResponse.json({ error: "Anthropic is overloaded — try again shortly", code: "overloaded" }, { status: 529 });
-    }
     console.error("Pulp API error");
-    return NextResponse.json({ error: message }, { status: 500 });
+    return errorResponse(err);
   }
 }
