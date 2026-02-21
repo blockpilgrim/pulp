@@ -238,7 +238,7 @@ export function Canvas({
             disabled={!canProbe || probing}
             className="btn-primary"
           >
-            Draft
+            Press
           </button>
         </div>
       </div>

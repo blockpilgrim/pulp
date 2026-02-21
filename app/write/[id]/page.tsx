@@ -165,6 +165,21 @@ export default function WritePage() {
     [handleGenerate]
   );
 
+  const handleContinue = useCallback(() => {
+    if (!session) return;
+    // Accept the current output as the new working text
+    const outputText = draftText || session.draft || session.content;
+    update({
+      state: "writing",
+      content: outputText,
+      draft: null,
+      draftMode: null,
+      rawContent: null,
+    });
+    setDraftText("");
+    setProvocationsData(null);
+  }, [session, draftText, update]);
+
   const handleRevert = useCallback(() => {
     if (!session) return;
     const raw = session.rawContent || session.content;
@@ -259,6 +274,7 @@ export default function WritePage() {
               update({ draft: v });
             }
           }}
+          onContinue={handleContinue}
           onRevert={handleRevert}
           onBack={() => router.push("/")}
           onDownload={() => {

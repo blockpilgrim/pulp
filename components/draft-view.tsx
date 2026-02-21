@@ -8,6 +8,7 @@ export function DraftView({
   streaming,
   mode = "draft",
   onDraftChange,
+  onContinue,
   onRevert,
   onBack,
   onDownload,
@@ -16,6 +17,7 @@ export function DraftView({
   streaming: boolean;
   mode?: DraftMode;
   onDraftChange: (v: string) => void;
+  onContinue?: () => void;
   onRevert?: () => void;
   onBack: () => void;
   onDownload?: () => void;
@@ -50,18 +52,26 @@ export function DraftView({
       <div className="flex items-center justify-between mb-6">
         <div className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em]">
           {streaming
-            ? mode === "polish" ? "Polishing..." : "Drafting..."
-            : mode === "polish" ? "Your polished text" : "Your draft"
+            ? mode === "polish" ? "Polishing..." : "Pressing..."
+            : mode === "polish" ? "Polished" : "Pressed"
           }
         </div>
         {!streaming && (
           <div className="flex items-center gap-4">
+            {onContinue && (
+              <button
+                onClick={onContinue}
+                className="link-subtle text-[0.72rem] font-mono cursor-pointer"
+              >
+                continue with this
+              </button>
+            )}
             {onRevert && (
               <button
                 onClick={onRevert}
                 className="link-subtle text-[0.72rem] font-mono cursor-pointer"
               >
-                back to writing
+                revert
               </button>
             )}
             <button

@@ -18,9 +18,9 @@ export function RoundIndicator({
       case "polish":
         return "polished";
       case "drafting":
-        return "drafting...";
+        return "pressing...";
       case "draft":
-        return "draft";
+        return "pressed";
       default:
         return "";
     }
