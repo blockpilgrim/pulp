@@ -1,8 +1,12 @@
 export type SessionState =
   | "writing"
   | "probing"
+  | "polishing"
+  | "polish"
   | "drafting"
   | "draft";
+
+export type DraftMode = "polish" | "draft";
 
 export type Session = {
   id: string;
@@ -14,6 +18,8 @@ export type Session = {
   content: string;
   probeCount: number;
   draft: string | null;
+  draftMode: DraftMode | null;
+  rawContent: string | null;
 };
 
 export type PulpResponse = {

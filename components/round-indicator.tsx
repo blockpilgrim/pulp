@@ -13,6 +13,10 @@ export function RoundIndicator({
         return probeCount > 0 ? `probed ${probeCount}x` : "write";
       case "probing":
         return "thinking...";
+      case "polishing":
+        return "polishing...";
+      case "polish":
+        return "polished";
       case "drafting":
         return "drafting...";
       case "draft":

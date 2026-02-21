@@ -111,6 +111,7 @@ export function Canvas({
   initialContent,
   onContentChange,
   onProbe,
+  onPolish,
   onDraft,
   probing,
   direction,
@@ -119,6 +120,7 @@ export function Canvas({
   initialContent: string;
   onContentChange: (text: string) => void;
   onProbe: (text: string) => void;
+  onPolish: (text: string) => void;
   onDraft: (text: string) => void;
   probing: boolean;
   direction: string;
@@ -221,12 +223,22 @@ export function Canvas({
           <button
             onClick={() => {
               const text = editor ? extractUserText(editor) : contentRef.current;
+              onPolish(text);
+            }}
+            disabled={!canProbe || probing}
+            className="btn-primary"
+          >
+            Polish
+          </button>
+          <button
+            onClick={() => {
+              const text = editor ? extractUserText(editor) : contentRef.current;
               onDraft(text);
             }}
             disabled={!canProbe || probing}
             className="btn-primary"
           >
-            Write draft
+            Draft
           </button>
         </div>
       </div>

@@ -22,11 +22,17 @@ function migrateSession(s: Record<string, unknown>): Session {
     const stateMap: Record<string, SessionState> = {
       writing: "writing",
       probing: "probing",
+      polishing: "polishing",
+      polish: "polish",
       drafting: "drafting",
       draft: "draft",
     };
     const state = stateMap[s.state as string] || "writing";
-    return { ...s, state } as Session;
+    const migrated = { ...s, state } as Session;
+    // Ensure new fields exist on older sessions
+    if (!("draftMode" in migrated)) (migrated as Record<string, unknown>).draftMode = null;
+    if (!("rawContent" in migrated)) (migrated as Record<string, unknown>).rawContent = null;
+    return migrated;
   }
 
   // Migrate from old format (has braindump + rounds)
@@ -82,6 +88,8 @@ function migrateSession(s: Record<string, unknown>): Session {
     content,
     probeCount,
     draft: (old.draft as string) || null,
+    draftMode: null,
+    rawContent: null,
   };
 }
 
@@ -143,6 +151,8 @@ export function useSessions() {
       content: "",
       probeCount: 0,
       draft: null,
+      draftMode: null,
+      rawContent: null,
     };
     const next = [session, ...loadSessions()];
     persist(next);

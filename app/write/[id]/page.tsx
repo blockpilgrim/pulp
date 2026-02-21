@@ -5,7 +5,7 @@ import { useCallback, useState, useEffect } from "react";
 import { useSession } from "@/lib/store";
 import { sanitizeFilename, downloadAsTxt } from "@/lib/utils";
 import { getApiKey } from "@/lib/api-key";
-import type { PulpResponse } from "@/lib/types";
+import type { PulpResponse, DraftMode } from "@/lib/types";
 import { Canvas } from "@/components/canvas";
 import { DraftView } from "@/components/draft-view";
 import { RoundIndicator } from "@/components/round-indicator";
@@ -24,7 +24,7 @@ export default function WritePage() {
   // Warn before closing during active API calls
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (streaming || session?.state === "probing") {
+      if (streaming || session?.state === "probing" || session?.state === "polishing") {
         e.preventDefault();
       }
     };
@@ -39,7 +39,7 @@ export default function WritePage() {
       setDraftText(session.draft);
     }
     // If user closed tab during API call, reset to usable state
-    if (session.state === "probing" || session.state === "drafting") {
+    if (session.state === "probing" || session.state === "drafting" || session.state === "polishing") {
       update({ state: "writing" });
     }
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -92,12 +92,15 @@ export default function WritePage() {
     [session, update]
   );
 
-  const handleDraft = useCallback(
-    async (text: string) => {
+  const handleGenerate = useCallback(
+    async (text: string, mode: DraftMode) => {
       if (!session) return;
       setError(null);
 
-      update({ content: text, state: "drafting" });
+      const activeState = mode === "polish" ? "polishing" : "drafting";
+      const doneState = mode === "polish" ? "polish" : "draft";
+
+      update({ content: text, state: activeState, draftMode: mode, rawContent: text });
       setDraftText("");
       setStreaming(true);
 
@@ -110,12 +113,12 @@ export default function WritePage() {
         const res = await fetch("/api/draft", {
           method: "POST",
           headers,
-          body: JSON.stringify({ text, direction: session.direction }),
+          body: JSON.stringify({ text, direction: session.direction, mode }),
         });
 
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || "Draft generation failed");
+          throw new Error(errData.error || "Generation failed");
         }
 
         const reader = res.body?.getReader();
@@ -137,13 +140,13 @@ export default function WritePage() {
         }
 
         setStreaming(false);
-        update({ state: "draft", draft: fullDraft });
+        update({ state: doneState, draft: fullDraft });
       } catch (err) {
         setStreaming(false);
         const msg = err instanceof Error ? err.message : "Something went wrong";
         setError(msg);
         if (fullDraft.length > 0) {
-          update({ state: "draft", draft: fullDraft });
+          update({ state: doneState, draft: fullDraft });
         } else {
           update({ state: "writing" });
         }
@@ -151,6 +154,30 @@ export default function WritePage() {
     },
     [session, update]
   );
+
+  const handlePolish = useCallback(
+    (text: string) => handleGenerate(text, "polish"),
+    [handleGenerate]
+  );
+
+  const handleDraft = useCallback(
+    (text: string) => handleGenerate(text, "draft"),
+    [handleGenerate]
+  );
+
+  const handleRevert = useCallback(() => {
+    if (!session) return;
+    const raw = session.rawContent || session.content;
+    update({
+      state: "writing",
+      content: raw,
+      draft: null,
+      draftMode: null,
+      rawContent: null,
+    });
+    setDraftText("");
+    setProvocationsData(null);
+  }, [session, update]);
 
   if (!loaded) {
     return (
@@ -212,6 +239,7 @@ export default function WritePage() {
           initialContent={session.content}
           onContentChange={handleContentChange}
           onProbe={handleProbe}
+          onPolish={handlePolish}
           onDraft={handleDraft}
           probing={state === "probing"}
           direction={session.direction}
@@ -219,17 +247,19 @@ export default function WritePage() {
         />
       )}
 
-      {/* Draft */}
-      {(state === "drafting" || state === "draft") && (
+      {/* Polish / Draft result */}
+      {(state === "polishing" || state === "polish" || state === "drafting" || state === "draft") && (
         <DraftView
           draft={draftText}
           streaming={streaming}
+          mode={session.draftMode || "draft"}
           onDraftChange={(v) => {
             setDraftText(v);
             if (!streaming) {
               update({ draft: v });
             }
           }}
+          onRevert={handleRevert}
           onBack={() => router.push("/")}
           onDownload={() => {
             const title = session.title || "pulp-draft";

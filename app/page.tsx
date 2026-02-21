@@ -43,7 +43,7 @@ export default function Home() {
         <span className="text-border">&#8594;</span>
         <span>probe</span>
         <span className="text-border">&#8594;</span>
-        <span>draft</span>
+        <span>polish or draft</span>
       </div>
 
       {/* Direction + CTA */}
@@ -95,6 +95,8 @@ export default function Home() {
                       {" · "}
                       {s.state === "writing" && (s.probeCount > 0 ? `probed ${s.probeCount}x` : "writing")}
                       {s.state === "probing" && "thinking..."}
+                      {s.state === "polishing" && "polishing..."}
+                      {s.state === "polish" && "polished"}
                       {s.state === "drafting" && "drafting..."}
                       {s.state === "draft" && "draft"}
                     </div>

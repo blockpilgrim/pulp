@@ -1,17 +1,22 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import type { DraftMode } from "@/lib/types";
 
 export function DraftView({
   draft,
   streaming,
+  mode = "draft",
   onDraftChange,
+  onRevert,
   onBack,
   onDownload,
 }: {
   draft: string;
   streaming: boolean;
+  mode?: DraftMode;
   onDraftChange: (v: string) => void;
+  onRevert?: () => void;
   onBack: () => void;
   onDownload?: () => void;
 }) {
@@ -44,10 +49,21 @@ export function DraftView({
     <div className="w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em]">
-          {streaming ? "Drafting..." : "Your draft"}
+          {streaming
+            ? mode === "polish" ? "Polishing..." : "Drafting..."
+            : mode === "polish" ? "Your polished text" : "Your draft"
+          }
         </div>
         {!streaming && (
           <div className="flex items-center gap-4">
+            {onRevert && (
+              <button
+                onClick={onRevert}
+                className="link-subtle text-[0.72rem] font-mono cursor-pointer"
+              >
+                back to writing
+              </button>
+            )}
             <button
               onClick={handleCopy}
               className="link-subtle text-[0.72rem] font-mono cursor-pointer"
