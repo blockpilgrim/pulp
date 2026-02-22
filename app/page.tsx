@@ -65,11 +65,11 @@ export default function Home() {
 
       {/* Hero — vertically centered */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
-        <h1 className="hero-enter stagger-0 text-[4rem] font-sans font-light tracking-[-0.03em] leading-[1] mb-3">
+        <h1 className="hero-enter stagger-0 text-[4rem] font-sans font-light tracking-[-0.03em] leading-[1] mb-4">
           Pulp
         </h1>
 
-        <div className="hero-enter stagger-1 mb-7 text-[0.875rem] font-sans text-muted italic tracking-[0.01em]">
+        <div className="hero-enter stagger-1 mb-8 text-[0.8125rem] font-mono text-muted italic tracking-[0.02em]">
           Your raw thinking, fully expressed.
         </div>
 
@@ -80,7 +80,7 @@ export default function Home() {
             value={direction}
             onChange={(e) => setDirection(e.target.value)}
             placeholder="What's on your mind? (optional)"
-            className="w-full bg-transparent border-b border-border-light/60 px-0 py-2 font-sans text-[0.8125rem] italic text-center focus:outline-none focus:border-muted transition-colors placeholder:text-muted-light mb-6"
+            className="w-full bg-transparent border-b border-border-light/60 px-0 py-2 font-mono text-[0.8125rem] italic text-center focus:outline-none focus:border-muted transition-colors placeholder:text-muted-light mb-4"
             onKeyDown={(e) => {
               if (e.key === "Enter") handleNew();
             }}

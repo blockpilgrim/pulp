@@ -27,7 +27,7 @@ export function RoundIndicator({
   })();
 
   return (
-    <div className="text-[0.7rem] font-mono text-muted uppercase tracking-[0.08em]">
+    <div className="text-[0.6875rem] font-mono text-muted uppercase tracking-[0.08em]">
       {label}
     </div>
   );

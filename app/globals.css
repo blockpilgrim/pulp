@@ -194,7 +194,7 @@ body > * {
 
 /* ========== Provocation Blocks (inline in editor) ========== */
 .provocation-block {
-  margin: 0.75rem 0;
+  margin: 0.25rem 0 0.75rem;
   user-select: none;
 }
 

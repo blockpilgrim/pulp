@@ -8,7 +8,7 @@ export function Loading({ message }: { message: string }) {
         <div className="loading-dot" style={{ animationDelay: "300ms" }} />
         <div className="loading-dot" style={{ animationDelay: "600ms" }} />
       </div>
-      <div className="text-[0.8rem] font-mono text-muted">
+      <div className="text-[0.8125rem] font-mono text-muted">
         {message}
       </div>
     </div>

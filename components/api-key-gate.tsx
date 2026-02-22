@@ -17,7 +17,7 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
   if (!checked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted animate-pulse-slow font-mono text-[0.8rem]">loading...</div>
+        <div className="text-muted animate-pulse-slow font-mono text-[0.8125rem]">loading...</div>
       </div>
     );
   }
@@ -44,10 +44,10 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <h1 className="text-[1.75rem] font-serif font-light tracking-tight leading-tight mb-2 text-center">
+        <h1 className="text-[1.75rem] font-sans font-light tracking-[-0.02em] leading-[1.15] mb-2 text-center">
           Pulp
         </h1>
-        <p className="text-muted text-[0.8rem] font-mono tracking-wide text-center mb-12">
+        <p className="text-muted text-[0.8125rem] font-mono tracking-wide text-center mb-12">
           Bring your own Anthropic API key
         </p>
 
@@ -61,7 +61,7 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
                 setError("");
               }}
               placeholder="sk-ant-..."
-              className="w-full bg-transparent border-b border-border px-0 py-3 font-mono text-[0.85rem] focus:outline-none focus:border-accent transition-colors"
+              className="w-full bg-transparent border-b border-border px-0 py-3 font-mono text-[0.8125rem] focus:outline-none focus:border-accent transition-colors"
               autoFocus
             />
             {error && (
@@ -78,7 +78,7 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
           </button>
         </form>
 
-        <p className="text-muted-light text-[0.7rem] font-mono text-center mt-8 leading-relaxed">
+        <p className="text-muted-light text-[0.625rem] font-mono text-center mt-8 leading-relaxed">
           Your key is stored locally in your browser.
           <br />
           It&apos;s sent directly to Anthropic&apos;s API — never stored on a server.
