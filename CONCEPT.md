@@ -15,7 +15,7 @@ There's a subtler version of this problem too: even when AI writes *from* a huma
 
 A writing tool that inverts the default AI-writing flow. The human writes first — raw, unstructured, stream-of-consciousness. The AI never writes *for* the human. Instead, it plays three distinct roles:
 
-1. **Thinking partner (Probe)** — across multiple rounds, the AI helps the writer excavate their own thinking through gentle, curious provocations.
+1. **Thinking partner (Provoke)** — across multiple rounds, the AI helps the writer excavate their own thinking through gentle, curious provocations. The button promises a challenge; what arrives is a whisper.
 2. **Editor (Polish)** — the AI cleans up the writer's own words: fixes grammar, smooths rough edges, adds minimal connective tissue. The writer's sentences are the text. Authorship is unambiguous.
 3. **Writer (Press)** — the AI takes the writer's raw thinking and composes something new from it — finding the deeper structure, giving half-formed thoughts their full expression. Authorship is shared.
 
@@ -28,14 +28,14 @@ The core principle: by the time AI writes anything substantial, it should be dra
 ## The Flow
 
 ```
-[Write] → [Probe] → [Write more] → [Polish or Press] → [Continue writing / Revert] → ...
+[Write] → [Provoke] → [Write more] → [Polish or Press] → [Continue writing / Revert] → ...
 ```
 
 The flow is **cyclical, not linear**. There is no terminal state. After any transformation (Polish or Press), the writer can:
-- **Continue with it** — accept the output as their new working text and keep writing, probing, or transforming again.
+- **Continue with it** — accept the output as their new working text and keep writing, provoking, or transforming again.
 - **Revert** — discard the output and return to their raw text. Nothing is ever lost.
 
-Writing is iterative. A writer might: write raw → probe → write more → polish → continue → probe again → press → continue → write more → polish → done. Or they might write → press → done. The app supports both.
+Writing is iterative. A writer might: write raw → provoke → write more → polish → continue → provoke again → press → continue → write more → polish → done. Or they might write → press → done. The app supports both.
 
 Everything happens on a single continuous canvas — a TipTap rich text editor. There are no separate screens for writing vs. responding to provocations.
 
@@ -43,9 +43,9 @@ Everything happens on a single continuous canvas — a TipTap rich text editor. 
 
 The user writes freely in the editor — stream of consciousness, no structure, no pressure to be coherent. The editor and nothing else. The app gets out of the way.
 
-### 2. Probe (AI round)
+### 2. Provoke (AI round)
 
-The user clicks "Probe." The AI reads everything the user has written and does two things:
+The user clicks "Provoke." The AI reads everything the user has written and does two things:
 
 **Splits** the text at meaningful seams — not arbitrary line breaks, but the natural joints in the thinking: where one idea ends and another begins, where the tone shifts, where a new thread emerges. This reveals the hidden skeleton of the writer's thinking.
 
@@ -55,9 +55,9 @@ The user clicks "Probe." The AI reads everything the user has written and does t
 
 The user edits directly in the same editor — adding text, expanding ideas, or simply dismissing provocations that don't resonate. There is no separate "response" UI. The user just keeps writing. Provocations are invitations; the user is never obligated to follow them.
 
-### 4. Probe again (AI round)
+### 4. Provoke again (AI round)
 
-The user can probe as many times as they want. Each probe re-reads all user text (skipping any remaining provocation nodes), finds the new shape of the thinking, and inserts fresh provocations. Old provocations are replaced.
+The user can provoke as many times as they want. Each round re-reads all user text (skipping any remaining provocation nodes), finds the new shape of the thinking, and inserts fresh provocations. Old provocations are replaced.
 
 ### 5. Polish or Press
 
@@ -70,7 +70,7 @@ When ready, the user chooses one of two transformations:
 ### 6. Continue or Revert
 
 The output streams in and becomes editable when complete. The writer can:
-- **Continue with this** — the output becomes their new working text. They return to the canvas and can keep writing, probe, polish, or press again.
+- **Continue with this** — the output becomes their new working text. They return to the canvas and can keep writing, provoke, polish, or press again.
 - **Revert** — discard the output and return to their original raw text. The raw text is always preserved until the writer explicitly moves on.
 - **Copy or download** — export the current text at any point.
 
@@ -80,7 +80,7 @@ The output streams in and becomes editable when complete. The writer can:
 
 These are fundamentally different jobs with different tones, and they must not bleed into each other.
 
-### Role 1: Thinking Partner (Probe)
+### Role 1: Thinking Partner (Provoke)
 
 The AI is not a coach, not a therapist, not a know-it-all. It is simply, genuinely curious about what this person is trying to say.
 
@@ -104,7 +104,7 @@ The AI is not a coach, not a therapist, not a know-it-all. It is simply, genuine
 
 **The spirit:** The AI is not ahead of the writer. It is beside them, pointing at things in their own thinking they might want to look at more closely. An invitation, never a judgment. Curious, never critical.
 
-**On re-probes (round 2+):** The AI re-reads all material as one piece and finds the new shape. It doesn't just tack new provocations onto old structure. It notices where the thinking has deepened, where new doors opened, where something wants to be followed further.
+**On subsequent rounds (2+):** The AI re-reads all material as one piece and finds the new shape. It doesn't just tack new provocations onto old structure. It notices where the thinking has deepened, where new doors opened, where something wants to be followed further.
 
 **Fragments are preserved verbatim.** The AI never rewrites, edits, or "improves" the user's words during this phase.
 
@@ -135,7 +135,7 @@ The AI is an invisible copy editor. The writer's sentences are the text. The AI 
 
 ### Role 3: Writer (Press)
 
-Only now does the AI write. And because the probe rounds did their job, it has rich material to work with.
+Only now does the AI write. And because the provocation rounds did their job, it has rich material to work with.
 
 **The job:** Translate raw thought into realized prose.
 
@@ -167,7 +167,7 @@ Only now does the AI write. And because the probe rounds did their job, it has r
 
 There's an intentional tension between Polish and Press. Polish preserves authorship completely — the writer reads the output and recognizes every sentence as theirs. Press shares authorship — the writer's ideas, the AI's prose. Both are valid. The key insight is that this should be a *choice the writer makes*, not something that happens to them.
 
-The parallel to Theodore Twombly's job in the film "Her" is instructive. Theodore takes other people's raw emotional material and writes beautiful letters in their voice. Press does essentially the same thing. The difference: Theodore's clients skip the hard work of reflection. Pulp's probe rounds ensure the writer *earns* the output — they've done the thinking, the wrestling, the excavation. By the time the AI writes, it's working from genuine raw material, not guessing.
+The parallel to Theodore Twombly's job in the film "Her" is instructive. Theodore takes other people's raw emotional material and writes beautiful letters in their voice. Press does essentially the same thing. The difference: Theodore's clients skip the hard work of reflection. Pulp's provocation rounds ensure the writer *earns* the output — they've done the thinking, the wrestling, the excavation. By the time the AI writes, it's working from genuine raw material, not guessing.
 
 Polish exists because sometimes the writer doesn't want a Theodore. They want their own words, cleaned up. The app respects both needs equally.
 
@@ -201,11 +201,11 @@ Polish exists because sometimes the writer doesn't want a Theodore. They want th
 ```
 app/
   page.tsx                    # Landing — session list + "Start writing"
-  write/[id]/page.tsx         # Orchestrator (Canvas for writing/probing, DraftView for polish/press)
-  api/pulp/route.ts           # Probe endpoint (returns fragments + provocations as JSON)
+  write/[id]/page.tsx         # Orchestrator (Canvas for writing/provoking, DraftView for polish/press)
+  api/pulp/route.ts           # Provoke endpoint (returns fragments + provocations as JSON)
   api/draft/route.ts          # Polish + Press endpoint (streams prose, mode param selects prompt)
 components/
-  canvas.tsx                  # TipTap editor + toolbar (probe, polish, press buttons)
+  canvas.tsx                  # TipTap editor + toolbar (provoke, polish, press buttons)
   provocation-node.tsx        # React node view for inline provocation blocks
   draft-view.tsx              # Streaming + editable output display (polish/press results)
   round-indicator.tsx         # Current state label
@@ -213,7 +213,7 @@ components/
 lib/
   types.ts                    # Session, DraftMode, PulpResponse types
   provocation-extension.ts    # Custom TipTap node extension for provocations
-  prompts.ts                  # All AI system/user prompts (probe, polish, press)
+  prompts.ts                  # All AI system/user prompts (provoke, polish, press)
   store.ts                    # useSessions / useSession hooks + localStorage
   utils.ts                    # ID generation, filename utils
 ```
@@ -226,19 +226,19 @@ Session {
   id, title, direction, createdAt, updatedAt,
   state: "writing" | "probing" | "polishing" | "polish" | "drafting" | "draft",
   content: string,            // current working text, persisted to localStorage
-  probeCount: number,         // how many times the user has probed
+  probeCount: number,         // how many times the user has provoked
   draft: string | null,       // polish/press output
   draftMode: DraftMode | null, // which mode produced the current output
   rawContent: string | null   // pre-transformation text (for revert)
 }
 ```
 
-Provocations are ephemeral — they exist only as TipTap nodes in the editor's in-memory document. On refresh, the user gets their text back and can probe again. The API response shape (`PulpResponse` with `fragments[]` and `provocations[]`) is unchanged.
+Provocations are ephemeral — they exist only as TipTap nodes in the editor's in-memory document. On refresh, the user gets their text back and can provoke again. The API response shape (`PulpResponse` with `fragments[]` and `provocations[]`) is unchanged.
 
 ### Action Language
-- User-facing toolbar: **Probe** · **Polish** · **Press**
+- User-facing toolbar: **Provoke** · **Polish** · **Press**
 - After output: **continue with this** · **revert** · copy · download · back to home
-- Internal API: `/api/pulp` (probe), `/api/draft?mode=polish|draft` (polish/press)
+- Internal API: `/api/pulp` (provoke), `/api/draft?mode=polish|draft` (polish/press)
 
 ---
 

@@ -210,7 +210,7 @@ export function Canvas({
       <div className="flex items-center justify-between py-4">
         <div className="text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
           {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
-          {probeCount > 0 && <span>probed {probeCount}x</span>}
+          {probeCount > 0 && <span>provoked {probeCount}x</span>}
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -221,7 +221,7 @@ export function Canvas({
             disabled={!canProbe || probing}
             className="btn-primary"
           >
-            {probing ? "Thinking..." : "Probe"}
+            {probing ? "Thinking..." : "Provoke"}
           </button>
           <button
             onClick={() => {

@@ -10,7 +10,7 @@ export function RoundIndicator({
   const label = (() => {
     switch (state) {
       case "writing":
-        return probeCount > 0 ? `probed ${probeCount}x` : "write";
+        return probeCount > 0 ? `provoked ${probeCount}x` : "write";
       case "probing":
         return "thinking...";
       case "polishing":
