@@ -140,9 +140,11 @@ These must look unmistakably different from the writer's text. They're system-in
 | Line-height | 1.6 | Tighter than body — compact, terse |
 | Weight | 400 | Regular — provocations don't shout |
 | Style | Italic | Further distinguishes from writer's text |
-| Color | `var(--accent-dark)` | Burnt sienna family — warm but distinct |
+| Color | `var(--provocation-color)` | Accent-dark in light mode, muted in dark mode |
 | Letter-spacing | 0.01em | Slight openness for readability at small size |
-| Background | Highlighter gradient | Existing gradient treatment is excellent — keep it |
+| Background | Highlighter gradient (light) | Gradient on `.provocation-text` in light mode |
+| Border | Left bar (dark) | 2px accent left border replaces highlighter in dark mode |
+| Block margin | 0.25rem top, 0.75rem bottom | Tight top margin couples provocation to preceding text |
 
 ### Polish Output (writer's words, cleaned up)
 
@@ -182,12 +184,27 @@ The size parity between writing surface (Quattro 18px) and Press (Serif 18px) is
 
 After any transformation, the writer sees "continue with this" and "revert" actions. These follow the standard navigation link style (Mono, 12px, muted). When the writer continues with Polish output, the text returns to the canvas in Quattro — seamless, since it was already in Quattro. When they continue with Press output, the text also returns to the canvas in Quattro — because it's now their working text again, back in the workspace world.
 
+### Home Page Hero
+
+The "Pulp" title uses Quattro — not Mono — because "pulp" metaphorically refers to the writer's raw material. The product name lives in the writer's world, not the system's. This is a deliberate exception to the "anything that isn't the writer's text is Mono" rule.
+
+| Property | Value | Notes |
+|----------|-------|-------|
+| Font | iA Writer Quattro | Writer's world — "pulp" = raw material |
+| Size | 4rem (64px) | Display size — proto-logotype |
+| Line-height | 1 | Tight — single word |
+| Weight | 300 (Light) | Thin strokes at this scale create rawness |
+| Letter-spacing | -0.03em | Tightened for display |
+| Color | `var(--foreground)` | Full contrast |
+
+The tagline ("Your raw thinking, fully expressed.") and direction input placeholder use **Mono italic** — the system speaking, inviting the writer in. The vertical rhythm groups into two tight clusters (title+tagline, input+button) with a structural break between them.
+
 ### Page Title (session heading)
 
 | Property | Value | Notes |
 |----------|-------|-------|
 | Font | iA Writer Quattro | Part of the workspace world |
-| Size | 1.75rem (28px) | Largest text on the page |
+| Size | 1.75rem (28px) | Largest text on the write page |
 | Line-height | 1.15 | Tight — titles don't need line spacing |
 | Weight | 300 (Light) | Light weight creates elegance at large size |
 | Letter-spacing | -0.02em | Slight tightening at display size |
@@ -381,7 +398,7 @@ const iaMono = localFont({
     { path: "./fonts/iAWriterMonoS-Italic.woff2", weight: "400", style: "italic" },
     { path: "./fonts/iAWriterMonoS-Bold.woff2", weight: "500", style: "normal" },
   ],
-  variable: "--font-mono",
+  variable: "--font-ia-mono",  // NOT --font-mono (conflicts with Tailwind theme var)
   display: "swap",
 });
 
@@ -396,11 +413,23 @@ const sourceSerif = Source_Serif_4({
 
 ### Tailwind theme mapping
 
+Note: next/font's CSS variable for Mono must differ from Tailwind's theme variable to avoid a circular reference. We use `--font-ia-mono` for next/font and map it to `--font-mono` via @theme.
+
 ```css
 @theme {
   --font-sans: var(--font-quattro), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, monospace;
-  --font-serif: var(--font-serif), "Georgia", serif;
+  --font-mono: var(--font-ia-mono), ui-monospace, monospace;
+  --font-serif: var(--font-source-serif), "Georgia", serif;
+}
+```
+
+### Body base font
+
+The body element must have an explicit `font-family` declaration so elements without a Tailwind font class inherit Quattro rather than falling to the browser default:
+
+```css
+body {
+  font-family: var(--font-quattro), ui-sans-serif, system-ui, sans-serif;
 }
 ```
 
@@ -426,4 +455,7 @@ Add to README or globals.css:
 | Sans-serif | Geist Sans | Removed | Barely used; Quattro fills this role |
 | Font loading | 3 Google Fonts | 2 self-hosted + 1 Google Font | Eliminates CDN dependency for primary fonts |
 | Type scale | Ad-hoc sizes | Rationalized 9-step scale | Consistent hierarchy across all contexts |
+| Home hero | 1.75rem serif | 4rem Quattro Light | Proto-logotype; "pulp" = writer's raw material |
+| Home tagline | Quattro | Mono italic | System voice — tool speaking to user |
+| Provocations (dark) | Highlighter gradient | Left bar + muted text | Adapts to dark mode without noisy highlights |
 | Core idea | Same font for everything | Font change signals authorship change | Polish = your words (Quattro). Press = shared prose (Serif). |
