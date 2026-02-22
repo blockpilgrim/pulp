@@ -116,6 +116,7 @@ export function Canvas({
   probing,
   direction,
   provocationsData,
+  probeCount = 0,
 }: {
   initialContent: string;
   onContentChange: (text: string) => void;
@@ -125,6 +126,7 @@ export function Canvas({
   probing: boolean;
   direction: string;
   provocationsData: PulpResponse | null;
+  probeCount?: number;
 }) {
   const contentRef = useRef(initialContent);
   const provocationsAppliedRef = useRef<PulpResponse | null>(null);
@@ -192,7 +194,7 @@ export function Canvas({
   const wordCount = userText.trim() ? userText.trim().split(/\s+/).length : 0;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto flex-1 flex flex-col">
       {direction && (
         <div className="mb-2">
           <div className="text-[0.75rem] font-mono text-muted-light italic">
@@ -201,15 +203,16 @@ export function Canvas({
         </div>
       )}
 
-      <div className="tiptap-editor-wrapper">
+      <div className="tiptap-editor-wrapper flex-1">
         <EditorContent editor={editor} />
       </div>
 
-      <div className="flex items-center justify-between mt-6 mb-8">
-        <div className="text-[0.7rem] font-mono text-muted-light">
-          {wordCount > 0 && `${wordCount} word${wordCount === 1 ? "" : "s"}`}
+      <div className="flex items-center justify-between py-4">
+        <div className="text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
+          {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
+          {probeCount > 0 && <span>probed {probeCount}x</span>}
         </div>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => {
               const text = editor ? extractUserText(editor) : contentRef.current;
@@ -226,7 +229,7 @@ export function Canvas({
               onPolish(text);
             }}
             disabled={!canProbe || probing}
-            className="btn-primary"
+            className="btn-ghost"
           >
             Polish
           </button>
@@ -236,7 +239,7 @@ export function Canvas({
               onDraft(text);
             }}
             disabled={!canProbe || probing}
-            className="btn-primary"
+            className="btn-ghost"
           >
             Press
           </button>

@@ -36,6 +36,10 @@
   /* Paper texture opacity */
   --texture-opacity: 0.35;
 
+  /* Provocations — use highlighter in light mode */
+  --provocation-color: var(--accent-dark);
+  --provocation-bar: transparent;
+
   /* Type Scale */
   --type-3xs: 0.625rem;   /* 10px — footer, fine print */
   --type-2xs: 0.6875rem;  /* 11px — labels, metadata, timestamps */
@@ -65,6 +69,11 @@
   --accent-light:    #3a2518;
   --accent-highlight: #3d2a14;
   --accent-shadow:   rgba(212, 98, 46, 0.25);
+
+  /* Provocation overrides for dark mode */
+  --provocation-color: var(--muted);
+  --provocation-bar: var(--accent);
+
 
   --border:          #3a342d;
   --border-light:    #2e2923;
@@ -224,10 +233,12 @@ body > * {
   font-size: var(--type-sm);
   line-height: 1.6;
   letter-spacing: 0.01em;
-  color: var(--accent-dark);
+  color: var(--provocation-color);
   font-style: italic;
   padding: 0;
+  padding-left: 0.75rem;
   margin: 0.75rem 0;
+  border-left: 2px solid var(--provocation-bar);
 }
 
 .provocation-text {
@@ -247,6 +258,13 @@ body > * {
   padding: 0.1em 0.35em;
   margin: 0 -0.35em;
   border-radius: 0.15em 0.4em 0.3em 0.2em;
+}
+
+/* Dark mode: drop highlighter, the left bar is enough */
+[data-theme="dark"] .provocation-text {
+  background-image: none !important;
+  padding: 0;
+  margin: 0;
 }
 
 /* ========== Typography: Draft / Output ========== */
@@ -280,9 +298,7 @@ body > * {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0.625rem 1.5rem;
+  padding: 0.5rem 1.25rem;
   font-family: var(--font-ia-mono);
   font-size: var(--type-sm);
   font-weight: 500;
@@ -312,6 +328,40 @@ body > * {
 }
 
 .btn-primary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Secondary / ghost button — same size as primary, lighter visual weight */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-ia-mono);
+  font-size: var(--type-sm);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-ghost:hover {
+  color: var(--foreground);
+  border-color: var(--foreground-secondary);
+}
+
+.btn-ghost:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-ghost:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

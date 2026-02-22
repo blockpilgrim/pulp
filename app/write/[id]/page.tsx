@@ -224,7 +224,7 @@ export default function WritePage() {
   if (!loaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted animate-pulse-slow font-mono text-[0.8rem]">loading...</div>
+        <div className="text-muted animate-pulse-slow font-mono text-[0.8125rem]">loading...</div>
       </div>
     );
   }
@@ -232,10 +232,10 @@ export default function WritePage() {
   if (!session) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <div className="text-muted font-mono text-[0.8rem]">Session not found</div>
+        <div className="text-muted font-mono text-[0.8125rem]">Session not found</div>
         <button
           onClick={() => router.push("/")}
-          className="link-subtle text-[0.72rem] font-mono cursor-pointer"
+          className="link-subtle text-[0.75rem] font-mono cursor-pointer"
         >
           go home
         </button>
@@ -247,24 +247,11 @@ export default function WritePage() {
   const showCanvas = state === "writing" || state === "probing";
 
   return (
-    <div className="min-h-screen flex flex-col px-4 pt-12 pb-4">
-      {/* Header */}
-      <div className="w-full max-w-2xl mx-auto flex items-center justify-between mb-8">
-        <button
-          onClick={() => router.push("/")}
-          className="link-subtle text-[0.72rem] font-mono cursor-pointer"
-        >
-          pulp
-        </button>
-        <RoundIndicator
-          probeCount={session.probeCount}
-          state={state}
-        />
-      </div>
+    <div className="min-h-screen flex flex-col px-4 pt-10 pb-4">
 
       {/* Error */}
       {error && (
-        <div className="w-full max-w-2xl mx-auto mb-6 px-4 py-3 bg-accent-light border border-accent-highlight text-accent-dark text-[0.82rem] font-mono rounded-sm">
+        <div className="w-full max-w-2xl mx-auto mb-6 px-4 py-3 bg-accent-light border border-accent-highlight text-accent-dark text-[0.8125rem] font-mono rounded-sm">
           {error}
           <button
             onClick={() => setError(null)}
@@ -286,6 +273,7 @@ export default function WritePage() {
           probing={state === "probing"}
           direction={session.direction}
           provocationsData={provocationsData}
+          probeCount={session.probeCount}
         />
       )}
 
