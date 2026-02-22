@@ -69,18 +69,18 @@ export default function Home() {
           Pulp
         </h1>
 
-        <div className="hero-enter stagger-1 mb-10 text-[0.8125rem] font-sans text-muted italic">
+        <div className="hero-enter stagger-1 mb-7 text-[0.875rem] font-sans text-muted italic tracking-[0.01em]">
           Your raw thinking, fully expressed.
         </div>
 
         {/* Direction + CTA */}
-        <div className="hero-enter stagger-2 w-full max-w-sm">
+        <div className="hero-enter stagger-2 w-full max-w-xs">
           <input
             type="text"
             value={direction}
             onChange={(e) => setDirection(e.target.value)}
             placeholder="What's on your mind? (optional)"
-            className="w-full bg-transparent border-b border-border-light px-0 py-2 font-sans text-[0.9375rem] text-center focus:outline-none focus:border-accent transition-colors placeholder:text-muted-light placeholder:italic mb-6"
+            className="w-full bg-transparent border-b border-border-light/60 px-0 py-2 font-sans text-[0.8125rem] italic text-center focus:outline-none focus:border-muted transition-colors placeholder:text-muted-light mb-6"
             onKeyDown={(e) => {
               if (e.key === "Enter") handleNew();
             }}
