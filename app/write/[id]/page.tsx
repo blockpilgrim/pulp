@@ -248,6 +248,16 @@ export default function WritePage() {
 
   return (
     <div className="min-h-screen flex flex-col px-4 pt-10 pb-4">
+      {/* Back */}
+      <button
+        onClick={() => router.push("/")}
+        className="icon-btn fixed top-3 left-3 z-10"
+        aria-label="Back to home"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
 
       {/* Error */}
       {error && (
