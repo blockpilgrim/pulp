@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore, useRef, useCallback } from "react";
 import Link from "next/link";
-import { toPng } from "html-to-image";
+import html2canvas from "html2canvas-pro";
 import { decodeShareData, type DecodedShare } from "@/lib/share";
 
 let cachedHash: string | undefined;
@@ -41,18 +41,18 @@ export default function SharePage() {
   const captureImage = useCallback(async () => {
     if (!contentRef.current) return null;
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--background").trim();
-    const dataUrl = await toPng(contentRef.current, { backgroundColor: bg, pixelRatio: 2 });
-    // Draw watermark onto canvas
-    const img = new Image();
-    img.src = dataUrl;
-    await new Promise((resolve) => { img.onload = resolve; });
+    const source = await html2canvas(contentRef.current, {
+      backgroundColor: bg,
+      scale: 2,
+    });
+    // Add watermark below captured content
     const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height + 48; // extra space for watermark
+    canvas.width = source.width;
+    canvas.height = source.height + 48;
     const ctx = canvas.getContext("2d")!;
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0);
+    ctx.drawImage(source, 0, 0);
     addWatermark(canvas);
     return canvas.toDataURL("image/png");
   }, [addWatermark]);
@@ -121,10 +121,11 @@ export default function SharePage() {
           {data.fragments.flatMap((frag) => {
             const nodes: React.ReactNode[] = [];
             frag.text.split(/\n\n+/).forEach((para, i) => {
-              if (para.trim()) {
+              const trimmed = para.trim();
+              if (trimmed) {
                 nodes.push(
                   <p key={`${frag.id}-${i}`} className="share-paragraph">
-                    {para}
+                    {trimmed}
                   </p>
                 );
               }
