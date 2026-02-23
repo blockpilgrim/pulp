@@ -4,17 +4,15 @@ import { useState, useEffect } from "react";
 import { hasApiKey, setApiKey } from "@/lib/api-key";
 
 export function ApiKeyGate({ children }: { children: React.ReactNode }) {
-  const [keySet, setKeySet] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [keySet, setKeySet] = useState<boolean | null>(null);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     setKeySet(hasApiKey());
-    setChecked(true);
   }, []);
 
-  if (!checked) {
+  if (keySet === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-muted animate-pulse-slow font-mono text-[0.8125rem]">loading...</div>

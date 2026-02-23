@@ -4,15 +4,13 @@ import { useState, useEffect } from "react";
 import { hasApiKey, removeApiKey } from "@/lib/api-key";
 
 export function ApiKeyManager({ showEmptyState = false }: { showEmptyState?: boolean } = {}) {
-  const [keySet, setKeySet] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [keySet, setKeySet] = useState<boolean | null>(null);
 
   useEffect(() => {
     setKeySet(hasApiKey());
-    setChecked(true);
   }, []);
 
-  if (!checked) return null;
+  if (keySet === null) return null;
 
   if (keySet) {
     return (

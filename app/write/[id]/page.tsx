@@ -8,7 +8,6 @@ import { getApiKey } from "@/lib/api-key";
 import type { PulpResponse, DraftMode } from "@/lib/types";
 import { Canvas } from "@/components/canvas";
 import { DraftView } from "@/components/draft-view";
-import { RoundIndicator } from "@/components/round-indicator";
 
 export default function WritePage() {
   const params = useParams();
@@ -163,15 +162,8 @@ export default function WritePage() {
     [session, update]
   );
 
-  const handlePolish = useCallback(
-    (text: string) => handleGenerate(text, "polish"),
-    [handleGenerate]
-  );
-
-  const handleDraft = useCallback(
-    (text: string) => handleGenerate(text, "draft"),
-    [handleGenerate]
-  );
+  const handlePolish = (text: string) => handleGenerate(text, "polish");
+  const handleDraft = (text: string) => handleGenerate(text, "draft");
 
   const handleContinue = useCallback(() => {
     if (!session) return;
@@ -212,14 +204,14 @@ export default function WritePage() {
     [streaming, update]
   );
 
-  const handleBack = useCallback(() => router.push("/"), [router]);
+  const handleBack = () => router.push("/");
 
-  const handleDownload = useCallback(() => {
+  const handleDownload = () => {
     if (!session) return;
     const title = session.title || "pulp-draft";
     const date = new Date().toISOString().split("T")[0];
     downloadAsTxt(draftText, `${sanitizeFilename(title)}-${date}.txt`);
-  }, [session, draftText]);
+  };
 
   if (!loaded) {
     return (

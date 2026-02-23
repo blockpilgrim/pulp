@@ -16,18 +16,12 @@ function migrateStorageKey() {
   }
 }
 
+const VALID_STATES = new Set<SessionState>(["writing", "probing", "polishing", "polish", "drafting", "draft"]);
+
 function migrateSession(s: Record<string, unknown>): Session {
   // Already new format
   if ("content" in s && typeof s.content === "string" && !("braindump" in s)) {
-    const stateMap: Record<string, SessionState> = {
-      writing: "writing",
-      probing: "probing",
-      polishing: "polishing",
-      polish: "polish",
-      drafting: "drafting",
-      draft: "draft",
-    };
-    const state = stateMap[s.state as string] || "writing";
+    const state = VALID_STATES.has(s.state as SessionState) ? (s.state as SessionState) : "writing";
     const migrated = { ...s, state } as Session;
     // Ensure new fields exist on older sessions
     if (!("draftMode" in migrated)) (migrated as Record<string, unknown>).draftMode = null;
@@ -104,22 +98,8 @@ function loadSessions(): Session[] {
   }
 }
 
-let _lsAvailable: boolean | null = null;
-function isLocalStorageAvailable(): boolean {
-  if (_lsAvailable !== null) return _lsAvailable;
-  try {
-    const test = "__pulp_test__";
-    localStorage.setItem(test, "1");
-    localStorage.removeItem(test);
-    _lsAvailable = true;
-  } catch {
-    _lsAvailable = false;
-  }
-  return _lsAvailable;
-}
-
 function saveSessions(sessions: Session[]) {
-  if (typeof window === "undefined" || !isLocalStorageAvailable()) return;
+  if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
   } catch (e) {
@@ -130,13 +110,13 @@ function saveSessions(sessions: Session[]) {
 }
 
 export function useSessions() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [sessions, setSessions] = useState<Session[] | null>(null);
 
   useEffect(() => {
     setSessions(loadSessions());
-    setLoaded(true);
   }, []);
+
+  const loaded = sessions !== null;
 
   const createSession = useCallback((direction?: string): Session => {
     const session: Session = {
@@ -153,7 +133,7 @@ export function useSessions() {
       rawContent: null,
     };
     setSessions(prev => {
-      const next = [session, ...prev];
+      const next = [session, ...(prev ?? [])];
       saveSessions(next);
       return next;
     });
@@ -163,7 +143,7 @@ export function useSessions() {
   const updateSession = useCallback(
     (id: string, updates: Partial<Session>) => {
       setSessions(prev => {
-        const next = prev.map((s) =>
+        const next = (prev ?? []).map((s) =>
           s.id === id ? { ...s, ...updates, updatedAt: Date.now() } : s
         );
         saveSessions(next);
@@ -176,7 +156,7 @@ export function useSessions() {
   const deleteSession = useCallback(
     (id: string) => {
       setSessions(prev => {
-        const next = prev.filter((s) => s.id !== id);
+        const next = (prev ?? []).filter((s) => s.id !== id);
         saveSessions(next);
         return next;
       });
@@ -186,12 +166,12 @@ export function useSessions() {
 
   const getSession = useCallback(
     (id: string): Session | undefined => {
-      return sessions.find((s) => s.id === id);
+      return (sessions ?? []).find((s) => s.id === id);
     },
     [sessions]
   );
 
-  return { sessions, loaded, createSession, updateSession, deleteSession, getSession };
+  return { sessions: sessions ?? [], loaded, createSession, updateSession, deleteSession, getSession };
 }
 
 export function useSession(id: string) {
