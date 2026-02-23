@@ -1,4 +1,4 @@
-# Pulp — Tauri Migration Plan
+# Pulp — Tauri Migration Plan (TBD)
 
 Turn the Next.js web app into a native macOS app using Tauri v2.
 
