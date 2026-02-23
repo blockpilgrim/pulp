@@ -4,9 +4,10 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { ProvocationExtension } from "@/lib/provocation-extension";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { PulpResponse } from "@/lib/types";
 import type { JSONContent } from "@tiptap/core";
+import { encodeShareData } from "@/lib/share";
 
 function contentStringToDoc(text: string): JSONContent {
   const paragraphs = text.split(/\n\n+/);
@@ -114,6 +115,7 @@ export function Canvas({
   onPolish,
   onDraft,
   provoking,
+  title,
   direction,
   provocationsData,
   provocationCount = 0,
@@ -124,12 +126,29 @@ export function Canvas({
   onPolish: (text: string) => void;
   onDraft: (text: string) => void;
   provoking: boolean;
+  title: string;
   direction: string;
   provocationsData: PulpResponse | null;
   provocationCount?: number;
 }) {
   const contentRef = useRef(initialContent);
   const provocationsAppliedRef = useRef<PulpResponse | null>(null);
+  const [shareLabel, setShareLabel] = useState("share");
+
+  const handleShare = () => {
+    if (!provocationsData) return;
+    const encoded = encodeShareData(title, direction, provocationsData);
+    if (!encoded) {
+      setShareLabel("too long");
+      setTimeout(() => setShareLabel("share"), 2000);
+      return;
+    }
+    const url = `${window.location.origin}/share#${encoded}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setShareLabel("link copied");
+      setTimeout(() => setShareLabel("share"), 2000);
+    });
+  };
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -211,6 +230,14 @@ export function Canvas({
         <div className="text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
           {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
           {provocationCount > 0 && <span>provoked {provocationCount}x</span>}
+          {provocationsData && (
+            <button
+              onClick={handleShare}
+              className="link-subtle cursor-pointer"
+            >
+              {shareLabel}
+            </button>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <button

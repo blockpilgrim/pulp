@@ -236,7 +236,6 @@ body > * {
   color: var(--provocation-color);
   font-style: italic;
   padding: 0;
-  padding-left: 0.75rem;
   margin: 0.75rem 0;
   border-left: 2px solid var(--provocation-bar);
 }
@@ -255,8 +254,8 @@ body > * {
   background-size: 100% 100%;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  padding: 0.1em 0.35em;
-  margin: 0 -0.35em;
+  padding: 0.25em 0.55em;
+  margin: 0 -0.55em;
   border-radius: 0.15em 0.4em 0.3em 0.2em;
 }
 
@@ -538,6 +537,27 @@ body > * {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+/* ========== Share Page ========== */
+.share-paragraph {
+  font-family: var(--font-quattro);
+  font-size: var(--type-lg);
+  line-height: 1.8;
+  color: var(--foreground);
+  margin: 0 0 1em 0;
+}
+
+.share-provocation {
+  font-family: var(--font-ia-mono);
+  font-size: var(--type-sm);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--provocation-color);
+  font-style: italic;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  border-left: 2px solid var(--provocation-bar);
+}
+
 /* ========== Mobile ========== */
 @media (max-width: 640px) {
   .tiptap-editor-wrapper .tiptap {
@@ -558,6 +578,14 @@ body > * {
   }
 
   .provocation {
+    font-size: 0.75rem;
+  }
+
+  .share-paragraph {
+    font-size: 1rem;
+  }
+
+  .share-provocation {
     font-size: 0.75rem;
   }
 

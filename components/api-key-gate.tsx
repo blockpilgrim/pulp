@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { hasApiKey, setApiKey } from "@/lib/api-key";
 
 export function ApiKeyGate({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [keySet, setKeySet] = useState<boolean | null>(null);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
@@ -11,6 +13,11 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setKeySet(hasApiKey());
   }, []);
+
+  // Share page doesn't need an API key
+  if (pathname.startsWith("/share")) {
+    return <>{children}</>;
+  }
 
   if (keySet === null) {
     return (

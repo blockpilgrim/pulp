@@ -273,6 +273,7 @@ export default function WritePage() {
           onPolish={handlePolish}
           onDraft={handleDraft}
           provoking={state === "provoking"}
+          title={session.title}
           direction={session.direction}
           provocationsData={provocationsData}
           provocationCount={session.provocationCount}
