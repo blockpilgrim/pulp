@@ -110,23 +110,23 @@ function buildDocWithProvocations(
 export function Canvas({
   initialContent,
   onContentChange,
-  onProbe,
+  onProvoke,
   onPolish,
   onDraft,
-  probing,
+  provoking,
   direction,
   provocationsData,
-  probeCount = 0,
+  provocationCount = 0,
 }: {
   initialContent: string;
   onContentChange: (text: string) => void;
-  onProbe: (text: string) => void;
+  onProvoke: (text: string) => void;
   onPolish: (text: string) => void;
   onDraft: (text: string) => void;
-  probing: boolean;
+  provoking: boolean;
   direction: string;
   provocationsData: PulpResponse | null;
-  probeCount?: number;
+  provocationCount?: number;
 }) {
   const contentRef = useRef(initialContent);
   const provocationsAppliedRef = useRef<PulpResponse | null>(null);
@@ -153,7 +153,7 @@ export function Canvas({
       ProvocationExtension,
     ],
     content: initialContent ? contentStringToDoc(initialContent) : undefined,
-    editable: !probing,
+    editable: !provoking,
     onUpdate: ({ editor }) => {
       const text = extractUserText(editor);
       contentRef.current = text;
@@ -161,11 +161,11 @@ export function Canvas({
     },
   });
 
-  // Sync editable state with probing
+  // Sync editable state with provoking
   useEffect(() => {
     if (!editor) return;
-    editor.setEditable(!probing);
-  }, [editor, probing]);
+    editor.setEditable(!provoking);
+  }, [editor, provoking]);
 
   // Insert provocations when data arrives
   useEffect(() => {
@@ -183,14 +183,14 @@ export function Canvas({
 
   // Focus editor on mount
   useEffect(() => {
-    if (editor && !probing) {
+    if (editor && !provoking) {
       // Small delay to let the editor render
       setTimeout(() => editor.commands.focus("end"), 50);
     }
   }, [editor]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const userText = editor ? extractUserText(editor) : contentRef.current;
-  const canProbe = userText.trim().length > 20;
+  const canProvoke = userText.trim().length > 20;
   const wordCount = userText.trim() ? userText.trim().split(/\s+/).length : 0;
 
   return (
@@ -210,25 +210,25 @@ export function Canvas({
       <div className="flex items-center justify-between py-4">
         <div className="text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
           {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
-          {probeCount > 0 && <span>provoked {probeCount}x</span>}
+          {provocationCount > 0 && <span>provoked {provocationCount}x</span>}
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
               const text = editor ? extractUserText(editor) : contentRef.current;
-              onProbe(text);
+              onProvoke(text);
             }}
-            disabled={!canProbe || probing}
+            disabled={!canProvoke || provoking}
             className="btn-primary"
           >
-            {probing ? "Thinking..." : "Provoke"}
+            {provoking ? "Thinking..." : "Provoke"}
           </button>
           <button
             onClick={() => {
               const text = editor ? extractUserText(editor) : contentRef.current;
               onPolish(text);
             }}
-            disabled={!canProbe || probing}
+            disabled={!canProvoke || provoking}
             className="btn-ghost"
           >
             Polish
@@ -238,7 +238,7 @@ export function Canvas({
               const text = editor ? extractUserText(editor) : contentRef.current;
               onDraft(text);
             }}
-            disabled={!canProbe || probing}
+            disabled={!canProvoke || provoking}
             className="btn-ghost"
           >
             Press

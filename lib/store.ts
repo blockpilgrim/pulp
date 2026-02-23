@@ -16,16 +16,24 @@ function migrateStorageKey() {
   }
 }
 
-const VALID_STATES = new Set<SessionState>(["writing", "probing", "polishing", "polish", "drafting", "draft"]);
+const VALID_STATES = new Set<SessionState>(["writing", "provoking", "polishing", "polish", "drafting", "draft"]);
 
 function migrateSession(s: Record<string, unknown>): Session {
   // Already new format
   if ("content" in s && typeof s.content === "string" && !("braindump" in s)) {
-    const state = VALID_STATES.has(s.state as SessionState) ? (s.state as SessionState) : "writing";
+    const rawState = s.state as string;
+    const state = rawState === "probing" ? "provoking" as SessionState
+      : VALID_STATES.has(rawState as SessionState) ? (rawState as SessionState)
+      : "writing";
     const migrated = { ...s, state } as Session;
     // Ensure new fields exist on older sessions
     if (!("draftMode" in migrated)) (migrated as Record<string, unknown>).draftMode = null;
     if (!("rawContent" in migrated)) (migrated as Record<string, unknown>).rawContent = null;
+    // Migrate probeCount → provocationCount
+    if ("probeCount" in migrated && !("provocationCount" in migrated)) {
+      (migrated as Record<string, unknown>).provocationCount = (migrated as Record<string, unknown>).probeCount;
+      delete (migrated as Record<string, unknown>).probeCount;
+    }
     return migrated;
   }
 
@@ -69,7 +77,7 @@ function migrateSession(s: Record<string, unknown>): Session {
     edit: "draft",
   };
   const state = stateMap[oldState] || "writing";
-  const probeCount = (old.currentRound as number) || 0;
+  const provocationCount = (old.currentRound as number) || 0;
   const direction = typeof old.direction === "string" ? old.direction : "";
 
   return {
@@ -80,7 +88,7 @@ function migrateSession(s: Record<string, unknown>): Session {
     updatedAt: old.updatedAt as number || Date.now(),
     state,
     content,
-    probeCount,
+    provocationCount,
     draft: (old.draft as string) || null,
     draftMode: null,
     rawContent: null,
@@ -127,7 +135,7 @@ export function useSessions() {
       updatedAt: Date.now(),
       state: "writing",
       content: "",
-      probeCount: 0,
+      provocationCount: 0,
       draft: null,
       draftMode: null,
       rawContent: null,

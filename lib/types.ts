@@ -1,6 +1,6 @@
 export type SessionState =
   | "writing"
-  | "probing"
+  | "provoking"
   | "polishing"
   | "polish"
   | "drafting"
@@ -16,7 +16,7 @@ export type Session = {
   updatedAt: number;
   state: SessionState;
   content: string;
-  probeCount: number;
+  provocationCount: number;
   draft: string | null;
   draftMode: DraftMode | null;
   rawContent: string | null;

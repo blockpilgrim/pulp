@@ -12,8 +12,8 @@ type HistoryPanelProps = {
 };
 
 function stateLabel(s: Session): string {
-  if (s.state === "writing") return s.probeCount > 0 ? `provoked ${s.probeCount}x` : "writing";
-  if (s.state === "probing") return "thinking...";
+  if (s.state === "writing") return s.provocationCount > 0 ? `provoked ${s.provocationCount}x` : "writing";
+  if (s.state === "provoking") return "thinking...";
   if (s.state === "polishing") return "polishing...";
   if (s.state === "polish") return "polished";
   if (s.state === "drafting") return "pressing...";

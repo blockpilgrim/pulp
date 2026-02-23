@@ -23,7 +23,7 @@ export default function WritePage() {
   // Warn before closing during active API calls
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (streaming || session?.state === "probing" || session?.state === "polishing") {
+      if (streaming || session?.state === "provoking" || session?.state === "polishing") {
         e.preventDefault();
       }
     };
@@ -38,7 +38,7 @@ export default function WritePage() {
       setDraftText(session.draft);
     }
     // If user closed tab during API call, reset to usable state
-    if (session.state === "probing" || session.state === "drafting" || session.state === "polishing") {
+    if (session.state === "provoking" || session.state === "drafting" || session.state === "polishing") {
       update({ state: "writing" });
     }
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -59,16 +59,16 @@ export default function WritePage() {
     [session, update]
   );
 
-  const handleProbe = useCallback(
+  const handleProvoke = useCallback(
     async (text: string) => {
       if (!session) return;
       setError(null);
 
-      const probeNumber = session.probeCount + 1;
+      const provocationNumber = session.provocationCount + 1;
 
       update({
         content: text,
-        state: "probing",
+        state: "provoking",
         title: session.title || text.split(/[.\n]/)[0]?.trim().substring(0, 50) || "Untitled",
       });
 
@@ -80,7 +80,7 @@ export default function WritePage() {
         const res = await fetch("/api/pulp", {
           method: "POST",
           headers,
-          body: JSON.stringify({ text, roundNumber: probeNumber, direction: session.direction }),
+          body: JSON.stringify({ text, roundNumber: provocationNumber, direction: session.direction }),
         });
 
         if (!res.ok) {
@@ -90,7 +90,7 @@ export default function WritePage() {
 
         const data: PulpResponse = await res.json();
         setProvocationsData(data);
-        update({ state: "writing", probeCount: probeNumber });
+        update({ state: "writing", provocationCount: provocationNumber });
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
         update({ state: "writing" });
@@ -236,7 +236,7 @@ export default function WritePage() {
   }
 
   const state = session.state;
-  const showCanvas = state === "writing" || state === "probing";
+  const showCanvas = state === "writing" || state === "provoking";
 
   return (
     <div className="min-h-screen flex flex-col px-4 pt-10 pb-4">
@@ -264,18 +264,18 @@ export default function WritePage() {
         </div>
       )}
 
-      {/* Canvas: writing + probing */}
+      {/* Canvas: writing + provoking */}
       {showCanvas && (
         <Canvas
           initialContent={session.content}
           onContentChange={handleContentChange}
-          onProbe={handleProbe}
+          onProvoke={handleProvoke}
           onPolish={handlePolish}
           onDraft={handleDraft}
-          probing={state === "probing"}
+          provoking={state === "provoking"}
           direction={session.direction}
           provocationsData={provocationsData}
-          probeCount={session.probeCount}
+          provocationCount={session.provocationCount}
         />
       )}
 
