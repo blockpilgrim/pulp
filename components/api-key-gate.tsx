@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { hasApiKey, setApiKey } from "@/lib/api-key";
+import { hasApiKey, setApiKey, isDemoMode, setDemoMode } from "@/lib/api-key";
 
 export function ApiKeyGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setKeySet(hasApiKey());
+    setKeySet(hasApiKey() || isDemoMode());
   }, []);
 
   // Share page doesn't need an API key
@@ -97,6 +97,21 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
             Get a key from Anthropic
           </a>
         </p>
+
+        <div className="text-center mt-6">
+          <button
+            onClick={() => {
+              setDemoMode();
+              setKeySet(true);
+            }}
+            className="link-subtle text-[0.625rem] font-mono text-muted-light cursor-pointer"
+          >
+            or try the demo
+          </button>
+          <div className="text-[0.5625rem] font-mono text-muted-light/60 mt-1">
+            10 uses per day, no key needed
+          </div>
+        </div>
       </div>
     </div>
   );

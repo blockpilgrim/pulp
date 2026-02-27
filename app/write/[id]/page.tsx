@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { useSession } from "@/lib/store";
 import { sanitizeFilename, downloadAsTxt } from "@/lib/utils";
-import { getApiKey } from "@/lib/api-key";
+import { getApiKey, isDemoMode } from "@/lib/api-key";
 import type { PulpResponse, DraftMode } from "@/lib/types";
 import { Canvas } from "@/components/canvas";
 import { DraftView } from "@/components/draft-view";
@@ -19,6 +19,20 @@ export default function WritePage() {
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [provocationsData, setProvocationsData] = useState<PulpResponse | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
+  const [demoRemaining, setDemoRemaining] = useState<number | null>(null);
+
+  // Check demo mode and fetch remaining uses
+  useEffect(() => {
+    const demo = isDemoMode();
+    setIsDemo(demo);
+    if (demo) {
+      fetch("/api/demo-status")
+        .then((res) => res.json())
+        .then((data) => setDemoRemaining(data.remaining))
+        .catch(() => {});
+    }
+  }, []);
 
   // Warn before closing during active API calls
   useEffect(() => {
@@ -88,6 +102,9 @@ export default function WritePage() {
           throw new Error(errData.error || "Something went wrong");
         }
 
+        const demoHeader = res.headers.get("X-Demo-Remaining");
+        if (demoHeader !== null) setDemoRemaining(Number(demoHeader));
+
         const data: PulpResponse = await res.json();
         setProvocationsData(data);
         update({ state: "writing", provocationCount: provocationNumber });
@@ -127,6 +144,9 @@ export default function WritePage() {
           const errData = await res.json().catch(() => ({}));
           throw new Error(errData.error || "Generation failed");
         }
+
+        const demoHeader = res.headers.get("X-Demo-Remaining");
+        if (demoHeader !== null) setDemoRemaining(Number(demoHeader));
 
         const reader = res.body?.getReader();
         const decoder = new TextDecoder();
@@ -250,6 +270,13 @@ export default function WritePage() {
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
+
+      {/* Demo indicator */}
+      {isDemo && (
+        <div className="fixed top-3.5 right-3 z-10 font-mono text-[0.6875rem] text-muted-light tracking-[0.08em]">
+          demo{demoRemaining !== null && <span> · {demoRemaining} left</span>}
+        </div>
+      )}
 
       {/* Error */}
       {error && (

@@ -3,16 +3,35 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
 import { DRAFT_SYSTEM, DRAFT_USER, POLISH_SYSTEM, POLISH_USER } from "@/lib/prompts";
 import { errorResponse } from "@/lib/api-errors";
+import { checkDemoLimit } from "@/lib/rate-limit";
 import type { DraftMode } from "@/lib/types";
+
+const DEMO_TEXT_LIMIT = 5000;
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = req.headers.get("x-api-key") || process.env.ANTHROPIC_API_KEY;
+    const clientKey = req.headers.get("x-api-key");
+    const apiKey = clientKey || process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "API key required" }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
       });
+    }
+
+    const isDemo = !clientKey;
+    let demoRemaining: number | undefined;
+
+    if (isDemo) {
+      const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+      const limit = await checkDemoLimit(ip);
+      demoRemaining = limit.remaining;
+      if (!limit.allowed) {
+        return new Response(
+          JSON.stringify({ error: "Demo limit reached — enter your own API key to continue", code: "demo_limit" }),
+          { status: 429, headers: { "Content-Type": "application/json", "X-Demo-Remaining": "0" } }
+        );
+      }
     }
 
     const { text, direction, mode = "draft" } = await req.json();
@@ -23,6 +42,13 @@ export async function POST(req: NextRequest) {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
+    }
+
+    if (isDemo && text.length > DEMO_TEXT_LIMIT) {
+      return new Response(
+        JSON.stringify({ error: `Demo mode limits text to ${DEMO_TEXT_LIMIT} characters` }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const isPolish = draftMode === "polish";
@@ -48,9 +74,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return new Response(stream, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
-    });
+    const headers: Record<string, string> = { "Content-Type": "text/plain; charset=utf-8" };
+    if (isDemo && demoRemaining !== undefined) {
+      headers["X-Demo-Remaining"] = String(demoRemaining);
+    }
+
+    return new Response(stream, { headers });
   } catch (err) {
     console.error("Draft API error");
     return errorResponse(err);

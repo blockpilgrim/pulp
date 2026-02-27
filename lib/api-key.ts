@@ -18,3 +18,18 @@ export function removeApiKey(): void {
 export function hasApiKey(): boolean {
   return !!getApiKey();
 }
+
+const DEMO_KEY = "pulp_demo_mode";
+
+export function isDemoMode(): boolean {
+  if (typeof window === "undefined") return false;
+  return !hasApiKey() && localStorage.getItem(DEMO_KEY) === "true";
+}
+
+export function setDemoMode(): void {
+  localStorage.setItem(DEMO_KEY, "true");
+}
+
+export function clearDemoMode(): void {
+  localStorage.removeItem(DEMO_KEY);
+}
