@@ -194,24 +194,24 @@ body > * {
 
 /* ========== Provocation Blocks (inline in editor) ========== */
 .provocation-block {
-  margin: 0.25rem 0 0.75rem;
+  margin: 0.5rem 0 0.75rem;
   user-select: none;
 }
 
 .provocation-block-inner {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.5rem;
 }
 
 .provocation-dismiss {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.75rem;
   line-height: 1;
   color: var(--muted-light);
   background: none;
@@ -219,7 +219,6 @@ body > * {
   cursor: pointer;
   border-radius: 2px;
   transition: color 0.15s ease, background 0.15s ease;
-  margin-top: 0.1em;
 }
 
 .provocation-dismiss:hover {
@@ -235,9 +234,9 @@ body > * {
   letter-spacing: 0.01em;
   color: var(--provocation-color);
   font-style: italic;
-  padding: 0;
+  padding: 0 0 0 0.5rem;
   margin: 0.75rem 0;
-  border-left: 2px solid var(--provocation-bar);
+  border-left: 1.5px solid var(--provocation-bar);
 }
 
 .provocation-text {
@@ -553,7 +552,7 @@ body > * {
   letter-spacing: 0.01em;
   color: var(--provocation-color);
   font-style: italic;
-  padding: 0;
+  padding: 0 0 0 0.5rem;
   margin: 0 0 0.75rem;
   border-left: 2px solid var(--provocation-bar);
 }
