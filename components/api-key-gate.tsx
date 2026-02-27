@@ -52,11 +52,11 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
         <h1 className="text-[1.75rem] font-sans font-light tracking-[-0.02em] leading-[1.15] mb-2 text-center">
           Pulp
         </h1>
-        <p className="text-muted text-[0.8125rem] font-mono tracking-wide text-center mb-12">
+        <p className="text-muted text-[0.8125rem] font-mono tracking-wide text-center mb-8">
           Bring your own Anthropic API key
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <input
               type="password"
@@ -77,11 +77,30 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
           <button
             type="submit"
             disabled={!input.trim()}
-            className="btn-primary w-full"
+            className="btn-primary w-full disabled:opacity-15"
           >
             Save key
           </button>
         </form>
+
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 border-t border-border-light/40" />
+          <span className="text-[0.625rem] font-mono text-muted-light">or</span>
+          <div className="flex-1 border-t border-border-light/40" />
+        </div>
+
+        <button
+          onClick={() => {
+            setDemoMode();
+            setKeySet(true);
+          }}
+          className="btn-ghost w-full cursor-pointer"
+        >
+          Try the demo
+        </button>
+        <div className="text-[0.5625rem] font-mono text-muted-light/60 text-center mt-2">
+          10 uses per day, no key needed
+        </div>
 
         <p className="text-muted-light text-[0.625rem] font-mono text-center mt-8 leading-relaxed">
           Your key is stored locally in your browser.
@@ -97,21 +116,6 @@ export function ApiKeyGate({ children }: { children: React.ReactNode }) {
             Get a key from Anthropic
           </a>
         </p>
-
-        <div className="text-center mt-6">
-          <button
-            onClick={() => {
-              setDemoMode();
-              setKeySet(true);
-            }}
-            className="link-subtle text-[0.625rem] font-mono text-muted-light cursor-pointer"
-          >
-            or try the demo
-          </button>
-          <div className="text-[0.5625rem] font-mono text-muted-light/60 mt-1">
-            10 uses per day, no key needed
-          </div>
-        </div>
       </div>
     </div>
   );
