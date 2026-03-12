@@ -58,6 +58,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // ClerkProvider must wrap <html> here (not inside providers.tsx) because it
+    // must live in a Server Component and cannot be colocated with "use client".
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
