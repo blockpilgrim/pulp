@@ -11,7 +11,7 @@ See `BUILD-STRATEGY.md` for rationale behind each decision.
 
 Get authentication working end-to-end before touching billing. Each step is independently deployable.
 
-- [ ] 1.1 — Install and configure Clerk (middleware, env vars, provider wrapping)
+- [x] 1.1 — Install and configure Clerk (middleware, env vars, provider wrapping)
 - [ ] 1.2 — Protect write routes: require sign-in to access `/write/[id]` and API routes
 - [ ] 1.3 — Clerk → Neon user sync via webhook (`user.created`, `user.deleted`)
 - [ ] 1.4 — Remove BYOK: strip `x-api-key` header support and `ApiKeyGate` from all routes and UI

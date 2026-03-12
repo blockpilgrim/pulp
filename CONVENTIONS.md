@@ -15,9 +15,10 @@ app/                      # Next.js App Router pages and API routes
     demo-status/route.ts  # GET — demo rate limit status
   write/[id]/page.tsx     # Dynamic write session page
   share/page.tsx          # Share view page
-  layout.tsx              # Root layout (fonts, Providers wrapper)
+  layout.tsx              # Root layout (fonts, ClerkProvider, Providers wrapper)
   page.tsx                # Home page
   globals.css             # All CSS: tokens, components, animations
+middleware.ts             # Clerk middleware — runs on all routes, protects auth-required paths
 components/               # Shared React components
 lib/                      # Non-component logic: hooks, types, utilities
 fonts/                    # WOFF2 font files (self-hosted iA Writer fonts)
@@ -120,6 +121,40 @@ if (!loaded) {
 **Demo remaining count** is surfaced to the client via the `X-Demo-Remaining` response header. Both routes set this header when in demo mode.
 
 **IP extraction from `x-forwarded-for`:** Use `req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown"`. This pattern appears in both `/api/pulp` and `/api/draft`. The `demo-status` route extracts it via a helper function `getClientIp()`.
+
+---
+
+## Auth (Clerk)
+
+**`ClerkProvider` lives in `app/layout.tsx` — the Server Component.** It wraps the outermost JSX, outside `<html>`. It must NOT be moved into `components/providers.tsx` (which is a Client Component and cannot host Clerk's server-side context provider).
+
+```tsx
+// app/layout.tsx — correct placement
+return (
+  <ClerkProvider>
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  </ClerkProvider>
+)
+```
+
+**`middleware.ts` lives at the project root.** Uses `clerkMiddleware()` from `@clerk/nextjs/server`. The matcher skips Next.js internals and static files; always runs on `/api/*`. The matcher does NOT include `trpc` (project does not use tRPC).
+
+```ts
+import { clerkMiddleware } from "@clerk/nextjs/server";
+export default clerkMiddleware();
+export const config = {
+  matcher: [
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api)(.*)",
+  ],
+};
+```
+
+**Env vars required:** `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`. See `.env.example`.
 
 ---
 
