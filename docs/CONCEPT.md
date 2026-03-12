@@ -244,7 +244,7 @@ Provocations are ephemeral — they exist only as TipTap nodes in the editor's i
 
 ## Open Questions
 
-- **Post-output AI assistance.** After Polish or Press, could there be inline refinement? Selection-based editing? This is separate from the cyclical flow (which already lets you keep iterating).
+- **Post-output AI assistance.** After Polish or Press, the writer can select any passage and invoke a narrow contextual AI operation on it (deepen, cut, rephrase, match voice, end here). See `docs/INLINE-EDITING.md` for the full spec.
 - **Persistence.** Currently localStorage only. If this becomes a real product, what's the storage story?
 - **Version history.** The cyclical flow means a session could go through many transformations. Should there be a way to see or restore previous versions beyond the immediate revert?
 - **Mobile experience.** Three toolbar buttons + the editor — does this work well on small screens?
