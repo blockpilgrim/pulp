@@ -5,8 +5,7 @@ import { DRAFT_SYSTEM, DRAFT_USER, POLISH_SYSTEM, POLISH_USER } from "@/lib/prom
 import { errorResponse } from "@/lib/api-errors";
 import { checkDemoLimit } from "@/lib/rate-limit";
 import type { DraftMode } from "@/lib/types";
-
-const DEMO_TEXT_LIMIT = 5000;
+import { CLAUDE_MODEL, DEMO_TEXT_LIMIT } from "@/lib/config";
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,7 +54,7 @@ export async function POST(req: NextRequest) {
     const provider = createAnthropic({ apiKey });
 
     const result = streamText({
-      model: provider("claude-sonnet-4-6"),
+      model: provider(CLAUDE_MODEL),
       system: isPolish ? POLISH_SYSTEM : DRAFT_SYSTEM,
       prompt: isPolish ? POLISH_USER(text, direction) : DRAFT_USER(text, direction),
       temperature: isPolish ? 0.3 : 0.6,

@@ -4,8 +4,7 @@ import { generateText } from "ai";
 import { PULP_SYSTEM, PULP_USER } from "@/lib/prompts";
 import { errorResponse } from "@/lib/api-errors";
 import { checkDemoLimit } from "@/lib/rate-limit";
-
-const DEMO_TEXT_LIMIT = 5000;
+import { CLAUDE_MODEL, DEMO_TEXT_LIMIT } from "@/lib/config";
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,7 +45,7 @@ export async function POST(req: NextRequest) {
     const provider = createAnthropic({ apiKey });
 
     const { text: response } = await generateText({
-      model: provider("claude-sonnet-4-6"),
+      model: provider(CLAUDE_MODEL),
       system: PULP_SYSTEM,
       prompt: PULP_USER(text, roundNumber || 1, direction),
       temperature: 0.7,

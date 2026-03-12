@@ -115,7 +115,7 @@ if (!loaded) {
 
 **Streaming route** (`/api/draft`): Returns `new Response(stream, { headers })` — not `NextResponse`. The stream is built manually from `result.textStream` using a `ReadableStream` + `TextEncoder`. This is intentional to avoid Vercel AI SDK protocol framing on the response.
 
-**Anthropic client:** Created per-request via `createAnthropic({ apiKey })`. Model string `"claude-sonnet-4-6"` is hardcoded in each route (not yet in a shared constant).
+**Anthropic client:** Created per-request via `createAnthropic({ apiKey })`. Model and demo limit are imported from `lib/config.ts` (`CLAUDE_MODEL`, `DEMO_TEXT_LIMIT`).
 
 **Demo remaining count** is surfaced to the client via the `X-Demo-Remaining` response header. Both routes set this header when in demo mode.
 
@@ -282,10 +282,6 @@ Explicitly skipped:
 ## Open Questions
 
 - **`NextResponse.json` vs `new Response(JSON.stringify(...))` in `/api/draft`** — error responses in the draft route use the raw `Response` constructor while `/api/pulp` uses `NextResponse.json`. Both work. New code in `/api/draft` should follow its existing raw `Response` pattern for consistency within that file.
-
-- **Anthropic model name is hardcoded in two route files** — `"claude-sonnet-4-6"` is in both `app/api/pulp/route.ts` and `app/api/draft/route.ts`. A shared constant in `lib/` has not been introduced yet. Pick one approach and make it consistent.
-
-- **`DEMO_TEXT_LIMIT = 5000` is duplicated** — the constant appears separately in both route files rather than being imported from a shared location.
 
 - **`useSessions` double-instantiation** — `app/page.tsx` calls `useSessions()` directly, and `useSession(id)` internally calls `useSessions()` again. Each call creates its own independent React state. This works because both read from the same localStorage key, but two separate state instances exist simultaneously when a write session is open. This has not caused visible bugs but is worth knowing if sync issues appear.
 
