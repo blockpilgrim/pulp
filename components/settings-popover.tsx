@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, type RefObject } from "react";
 import { useTheme } from "next-themes";
 import { ApiKeyManager } from "@/components/api-key-manager";
 
@@ -44,12 +44,10 @@ function ThemeToggle() {
   );
 }
 
-export function SettingsPopover({ onClose }: { onClose: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-
+export function SettingsPopover({ onClose, containerRef }: { onClose: () => void; containerRef: RefObject<HTMLDivElement | null> }) {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         onClose();
       }
     };
@@ -62,11 +60,10 @@ export function SettingsPopover({ onClose }: { onClose: () => void }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [onClose]);
+  }, [onClose, containerRef]);
 
   return (
     <div
-      ref={ref}
       role="dialog"
       aria-label="Settings"
       className="popover-enter absolute top-[calc(100%+8px)] left-0 min-w-[220px] max-sm:min-w-[calc(100vw-2rem)] p-4 bg-surface border border-border rounded-[4px] shadow-[0_4px_12px_rgba(0,0,0,0.08)]"

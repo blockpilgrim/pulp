@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSessions } from "@/lib/store";
 import { HistoryPanel } from "@/components/history-panel";
@@ -12,6 +12,7 @@ export default function Home() {
   const [direction, setDirection] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsContainerRef = useRef<HTMLDivElement>(null);
 
   const handleNew = () => {
     const session = createSession(direction.trim() || undefined);
@@ -31,11 +32,10 @@ export default function Home() {
       {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3">
         {/* Settings */}
-        <div className="relative">
+        <div className="relative" ref={settingsContainerRef}>
           <button
             className="icon-btn"
             onClick={() => setSettingsOpen((v) => !v)}
-            onMouseDown={(e) => e.stopPropagation()}
             aria-label="Settings"
             aria-expanded={settingsOpen}
           >
@@ -45,7 +45,7 @@ export default function Home() {
             </svg>
           </button>
           {settingsOpen && (
-            <SettingsPopover onClose={() => setSettingsOpen(false)} />
+            <SettingsPopover onClose={() => setSettingsOpen(false)} containerRef={settingsContainerRef} />
           )}
         </div>
 
