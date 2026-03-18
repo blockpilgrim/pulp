@@ -14,8 +14,8 @@
   /* Text */
   --foreground: #2c2825;
   --foreground-secondary: #4a4543;
-  --muted: #8a8279;
-  --muted-light: #b5ada4;
+  --muted: #706860;
+  --muted-light: #8a8279;
 
   /* Accent — warm burnt sienna */
   --accent: #b5451b;
@@ -79,6 +79,11 @@
   --border-light:    #2e2923;
 
   --texture-opacity: 0.15;
+
+  /* Dark mode: restore plain gradient — multiply on dark bg = black */
+  background-image: radial-gradient(ellipse at 50% 30%, var(--background) 0%, var(--background-edge) 100%);
+  background-blend-mode: normal;
+  background-repeat: no-repeat;
 }
 
 /* ========== Theme Bridge (Tailwind v4) ========== */
@@ -109,7 +114,12 @@
 
 /* ========== Base ========== */
 html {
-  background: radial-gradient(ellipse at 50% 30%, var(--background) 0%, var(--background-edge) 100%);
+  background-color: var(--background);
+  background-image:
+    url("/bg-pattern-noise.svg"),
+    radial-gradient(ellipse at 50% 30%, var(--background) 0%, var(--background-edge) 100%);
+  background-blend-mode: multiply, normal;
+  background-repeat: repeat, no-repeat;
   min-height: 100%;
 }
 
@@ -121,16 +131,19 @@ body {
   min-height: 100%;
 }
 
-/* Paper texture — subtle SVG noise grain */
+/* Paper texture — dark mode only; light mode grain lives in html background stack */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: var(--texture-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-  background-repeat: repeat;
   z-index: 0;
+}
+
+[data-theme="dark"] body::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  mix-blend-mode: screen;
+  opacity: var(--texture-opacity);
 }
 
 /* Ensure page content sits above the texture overlay */
