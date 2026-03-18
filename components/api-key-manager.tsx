@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { hasApiKey, removeApiKey } from "@/lib/api-key";
+import { hasApiKey, setApiKey, removeApiKey, clearDemoMode } from "@/lib/api-key";
 
 export function ApiKeyManager({ showEmptyState = false }: { showEmptyState?: boolean } = {}) {
   const [keySet, setKeySet] = useState<boolean | null>(null);
+  const [input, setInput] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setKeySet(hasApiKey());
@@ -36,10 +38,45 @@ export function ApiKeyManager({ showEmptyState = false }: { showEmptyState?: boo
   }
 
   if (showEmptyState) {
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      const trimmed = input.trim();
+      if (!trimmed.startsWith("sk-ant-")) {
+        setError("Key should start with sk-ant-");
+        return;
+      }
+      if (trimmed.length < 20) {
+        setError("Key seems too short");
+        return;
+      }
+      clearDemoMode();
+      setApiKey(trimmed);
+      setKeySet(true);
+    };
+
     return (
-      <div className="text-[0.625rem] font-mono text-muted-light">
-        not set
-      </div>
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <input
+          type="password"
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+            setError("");
+          }}
+          placeholder="sk-ant-..."
+          className="w-full bg-transparent border-b border-border px-0 py-1.5 font-mono text-[0.75rem] focus:outline-none focus:border-accent transition-colors"
+        />
+        {error && (
+          <div className="text-accent-dark text-[0.625rem] font-mono">{error}</div>
+        )}
+        <button
+          type="submit"
+          disabled={!input.trim()}
+          className="btn-primary w-full disabled:opacity-15"
+        >
+          Save key
+        </button>
+      </form>
     );
   }
 

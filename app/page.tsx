@@ -35,6 +35,7 @@ export default function Home() {
           <button
             className="icon-btn"
             onClick={() => setSettingsOpen((v) => !v)}
+            onMouseDown={(e) => e.stopPropagation()}
             aria-label="Settings"
             aria-expanded={settingsOpen}
           >
