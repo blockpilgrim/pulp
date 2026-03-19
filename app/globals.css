@@ -36,9 +36,9 @@
   /* Paper texture opacity */
   --texture-opacity: 0.35;
 
-  /* Provocations — use highlighter in light mode */
-  --provocation-color: var(--accent-dark);
-  --provocation-bar: transparent;
+  /* Provocations — left bar + muted text in both themes */
+  --provocation-color: var(--muted);
+  --provocation-bar: var(--accent);
 
   /* Type Scale */
   --type-3xs: 0.625rem;   /* 10px — footer, fine print */
@@ -253,29 +253,7 @@ body > * {
 }
 
 .provocation-text {
-  background-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 12%,
-    var(--accent-highlight) 12%,
-    var(--accent-highlight) 88%,
-    transparent 88%,
-    transparent 100%
-  );
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  padding: 0.25em 0.55em;
-  margin: 0 -0.55em;
-  border-radius: 0.15em 0.4em 0.3em 0.2em;
-}
-
-/* Dark mode: drop highlighter, the left bar is enough */
-[data-theme="dark"] .provocation-text {
-  background-image: none !important;
-  padding: 0;
-  margin: 0;
+  /* Highlighter removed — left bar + muted text is sufficient */
 }
 
 /* ========== Typography: Draft / Output ========== */
