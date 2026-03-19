@@ -1,6 +1,15 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+// Clerk middleware disabled until auth implementation is complete.
+// Re-enable by uncommenting and removing the no-op export below.
+//
+// import { clerkMiddleware } from "@clerk/nextjs/server";
+// export default clerkMiddleware();
 
-export default clerkMiddleware();
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export default function middleware(_req: NextRequest) {
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
