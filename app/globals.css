@@ -17,14 +17,14 @@
   --muted: #706860;
   --muted-light: #8a8279;
 
-  /* Accent — warm burnt sienna */
-  --accent: #b5451b;
-  --accent-dark: #8f3615;
-  --accent-light: #fcecd6;
-  --accent-highlight: #f9d89c;
+  /* Accent — teal */
+  --accent: #2E8F8B;
+  --accent-dark: #236E6B;
+  --accent-light: #E2F0EF;
+  --accent-highlight: #5AB4AB;
 
   /* Accent shadow (for focus states) */
-  --accent-shadow: rgba(181, 69, 27, 0.2);
+  --accent-shadow: rgba(46, 143, 139, 0.2);
 
   /* Borders */
   --border: #ddd5c9;
@@ -64,11 +64,11 @@
   --muted:           #8a8279;
   --muted-light:     #5e5850;
 
-  --accent:          #d4622e;
-  --accent-dark:     #e8854f;
-  --accent-light:    #3a2518;
-  --accent-highlight: #3d2a14;
-  --accent-shadow:   rgba(212, 98, 46, 0.25);
+  --accent:          #52B8B5;
+  --accent-dark:     #72CCC9;
+  --accent-light:    #1B2F2E;
+  --accent-highlight: #233C3B;
+  --accent-shadow:   rgba(82, 184, 181, 0.25);
 
   /* Provocation overrides for dark mode */
   --provocation-color: var(--muted);
@@ -273,6 +273,10 @@ body > * {
 .draft-press {
   font-family: var(--font-source-serif);
   line-height: 1.9;
+}
+
+.draft-editable {
+  padding-left: 0.75rem;
 }
 
 .draft-editable:focus {
