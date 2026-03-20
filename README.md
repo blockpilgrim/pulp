@@ -6,30 +6,32 @@ A writing tool that inverts the AI-writing workflow. Instead of AI writing first
 
 ## What It Does
 
-Most AI writing tools start with a blank prompt and generate text for you. Pulp does the opposite: you write first, then AI plays three distinct roles to help you get where you're going.
+Most AI writing tools start with a blank prompt and generate text for you. Pulp does the opposite: you write first, then AI plays four distinct roles across a spectrum of authorship.
 
 **Provoke** — AI reads your raw text, splits it at its natural seams, and inserts terse, curious provocations inline: `failure?`, `who specifically?`, `the real version?`. Not therapy, not coaching — just a thinking partner pointing at the interesting parts of your own ideas. You write more, provoke again, as many rounds as you need.
 
-**Polish** — AI cleans up your words without replacing them. Fixes grammar, smooths rough edges, preserves your voice exactly. You read the output and can't tell what changed. Authorship: entirely yours.
+**Refine** — AI cleans up your words without replacing them. Fixes grammar, smooths rough edges, preserves your voice exactly. You read the output and can't tell what changed. Authorship: entirely yours.
 
-**Press** — AI takes everything you've written and composes new prose from it — finding the deeper structure, giving half-formed thoughts their full expression. The writer's ideas, the AI's craft. Authorship: shared.
+**Soft Press** — AI stays close to your words while gently restructuring, filling gaps, and elevating phrasing. Your text is the skeleton; the AI strengthens it. Authorship: mostly yours.
 
-The flow is cyclical, not linear. After any transformation you can continue writing, provoke again, try the other mode, or revert to your raw text. Nothing is ever lost.
+**Deep Press** — AI takes everything you've written and composes new prose from it — finding the deeper structure, giving half-formed thoughts their full expression. The writer's ideas, the AI's craft. Authorship: shared.
+
+The flow is cyclical, not linear. After any transformation you can continue writing, provoke again, try another mode, or revert to your raw text. Nothing is ever lost.
 
 ## Tech Stack
 
 - **Next.js 16** (App Router, Turbopack) with **React 19** and **TypeScript** (strict mode)
 - **Tailwind CSS v4** — design tokens, dark/light themes, no config file
 - **TipTap** rich text editor with a **custom node extension** for rendering inline provocations as React components
-- **Anthropic Claude Sonnet 4.6** via **Vercel AI SDK** — streaming responses for Polish/Press, structured JSON for Provoke
+- **Anthropic Claude Sonnet 4.6** via **Vercel AI SDK** — streaming responses for Refine/Press, structured JSON for Provoke
 - **Fully client-side** — all writing stored in browser localStorage, no database, no server-side persistence
 - **BYOK** (bring your own key) — users provide their Anthropic API key, stored locally, sent directly to the API
 
 ## Architecture
 
-**State machine**: Sessions cycle through `writing → provoking → writing` (provoke loop) or `writing → polishing/drafting → polish/draft → writing` (transform loop). The state machine enforces valid transitions and enables revert at any point.
+**State machine**: Sessions cycle through `writing → provoking → writing` (provoke loop) or `writing → refining/pressing → refine/press → writing` (transform loop). The state machine enforces valid transitions and enables revert at any point.
 
-**Three-voice typography**: Font changes signal authorship. iA Writer Quattro for the writer's text and polished output. iA Writer Mono for system UI and provocations. Source Serif 4 for Press output only — a visual cue that this prose was co-authored.
+**Three-voice typography**: Font changes signal authorship. iA Writer Quattro for the writer's text, Refine output, and Soft Press output. iA Writer Mono for system UI and provocations. Source Serif 4 for Deep Press output only — a visual cue that this prose was co-authored.
 
 **Custom TipTap extension**: Provocations are rendered as ephemeral React node views inside the editor. `buildDocWithProvocations()` interleaves the AI's fragment splits with inline provocation blocks. `extractUserText()` walks the document tree to extract only the writer's words, skipping provocation nodes.
 
@@ -48,4 +50,4 @@ You'll need an Anthropic API key. The app prompts for it on first visit — it's
 
 ## Status
 
-Early-stage product, actively developed. The core writing loop (write → provoke → polish/press) is fully functional. Built as an independent project exploring how AI tools can support human thinking rather than replace it.
+Early-stage product, actively developed. The core writing loop (write → provoke → refine/press) is fully functional. Built as an independent project exploring how AI tools can support human thinking rather than replace it.

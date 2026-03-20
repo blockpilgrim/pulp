@@ -16,19 +16,29 @@ function migrateStorageKey() {
   }
 }
 
-const VALID_STATES = new Set<SessionState>(["writing", "provoking", "polishing", "polish", "drafting", "draft"]);
+const VALID_STATES = new Set<SessionState>(["writing", "provoking", "refining", "refine", "pressing", "press"]);
 
 function migrateSession(s: Record<string, unknown>): Session {
   // Already new format
   if ("content" in s && typeof s.content === "string" && !("braindump" in s)) {
     const rawState = s.state as string;
-    const state = rawState === "probing" ? "provoking" as SessionState
-      : VALID_STATES.has(rawState as SessionState) ? (rawState as SessionState)
-      : "writing";
+    // Migrate old state names to new ones
+    const stateRenames: Record<string, SessionState> = {
+      probing: "provoking",
+      polishing: "refining",
+      polish: "refine",
+      drafting: "pressing",
+      draft: "press",
+    };
+    const state = stateRenames[rawState] ?? (VALID_STATES.has(rawState as SessionState) ? (rawState as SessionState) : "writing");
     const migrated = { ...s, state } as Session;
     // Ensure new fields exist on older sessions
     if (!("draftMode" in migrated)) (migrated as Record<string, unknown>).draftMode = null;
     if (!("rawContent" in migrated)) (migrated as Record<string, unknown>).rawContent = null;
+    // Migrate old draftMode values
+    const dm = (migrated as Record<string, unknown>).draftMode as string | null;
+    if (dm === "polish") (migrated as Record<string, unknown>).draftMode = "refine";
+    if (dm === "draft") (migrated as Record<string, unknown>).draftMode = "deep";
     // Migrate probeCount → provocationCount
     if ("probeCount" in migrated && !("provocationCount" in migrated)) {
       (migrated as Record<string, unknown>).provocationCount = (migrated as Record<string, unknown>).probeCount;
@@ -73,8 +83,8 @@ function migrateSession(s: Record<string, unknown>): Session {
     exploding: "writing",
     explosion: "writing",
     drafting: "writing",
-    draft: "draft",
-    edit: "draft",
+    draft: "press",
+    edit: "press",
   };
   const state = stateMap[oldState] || "writing";
   const provocationCount = (old.currentRound as number) || 0;

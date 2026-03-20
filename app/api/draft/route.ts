@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
-import { DRAFT_SYSTEM, DRAFT_USER, POLISH_SYSTEM, POLISH_USER } from "@/lib/prompts";
+import { REFINE_SYSTEM, REFINE_USER, SOFT_PRESS_SYSTEM, SOFT_PRESS_USER, DEEP_PRESS_SYSTEM, DEEP_PRESS_USER } from "@/lib/prompts";
 import { errorResponse } from "@/lib/api-errors";
 import { checkDemoLimit } from "@/lib/rate-limit";
 import type { DraftMode } from "@/lib/types";
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const { text, direction, mode = "draft" } = await req.json();
+    const { text, direction, mode = "deep" } = await req.json();
     const draftMode = mode as DraftMode;
 
     if (!text || typeof text !== "string") {
@@ -50,14 +50,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isPolish = draftMode === "polish";
+    const modeConfig = {
+      refine: { system: REFINE_SYSTEM, prompt: REFINE_USER(text, direction), temperature: 0.3 },
+      soft:   { system: SOFT_PRESS_SYSTEM, prompt: SOFT_PRESS_USER(text, direction), temperature: 0.5 },
+      deep:   { system: DEEP_PRESS_SYSTEM, prompt: DEEP_PRESS_USER(text, direction), temperature: 0.6 },
+    } as const;
+    const config = modeConfig[draftMode] ?? modeConfig.deep;
     const provider = createAnthropic({ apiKey });
 
     const result = streamText({
       model: provider(CLAUDE_MODEL),
-      system: isPolish ? POLISH_SYSTEM : DRAFT_SYSTEM,
-      prompt: isPolish ? POLISH_USER(text, direction) : DRAFT_USER(text, direction),
-      temperature: isPolish ? 0.3 : 0.6,
+      system: config.system,
+      prompt: config.prompt,
+      temperature: config.temperature,
       maxOutputTokens: 4096,
     });
 

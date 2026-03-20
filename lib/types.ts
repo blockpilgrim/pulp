@@ -1,12 +1,12 @@
 export type SessionState =
   | "writing"
   | "provoking"
-  | "polishing"
-  | "polish"
-  | "drafting"
-  | "draft";
+  | "refining"
+  | "refine"
+  | "pressing"
+  | "press";
 
-export type DraftMode = "polish" | "draft";
+export type DraftMode = "refine" | "soft" | "deep";
 
 export type Session = {
   id: string;

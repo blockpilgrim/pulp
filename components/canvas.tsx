@@ -112,8 +112,8 @@ export function Canvas({
   initialContent,
   onContentChange,
   onProvoke,
-  onPolish,
-  onDraft,
+  onRefine,
+  onPress,
   provoking,
   title,
   direction,
@@ -123,8 +123,8 @@ export function Canvas({
   initialContent: string;
   onContentChange: (text: string) => void;
   onProvoke: (text: string) => void;
-  onPolish: (text: string) => void;
-  onDraft: (text: string) => void;
+  onRefine: (text: string) => void;
+  onPress: (text: string, intensity: "soft" | "deep") => void;
   provoking: boolean;
   title: string;
   direction: string;
@@ -134,6 +134,21 @@ export function Canvas({
   const contentRef = useRef(initialContent);
   const provocationsAppliedRef = useRef<PulpResponse | null>(null);
   const [shareLabel, setShareLabel] = useState("share");
+  const [pressOpen, setPressOpen] = useState(false);
+  const pressMenuRef = useRef<HTMLDivElement>(null);
+
+  // Focus first menu item on open, close on Escape
+  useEffect(() => {
+    if (!pressOpen) return;
+    const menu = pressMenuRef.current;
+    const firstItem = menu?.querySelector<HTMLButtonElement>("[role=menuitem]");
+    firstItem?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPressOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [pressOpen]);
 
   const handleShare = () => {
     if (!provocationsData) return;
@@ -253,23 +268,56 @@ export function Canvas({
           <button
             onClick={() => {
               const text = editor ? extractUserText(editor) : contentRef.current;
-              onPolish(text);
+              onRefine(text);
             }}
             disabled={!canProvoke || provoking}
             className="btn-ghost"
           >
-            Polish
+            Refine
           </button>
-          <button
-            onClick={() => {
-              const text = editor ? extractUserText(editor) : contentRef.current;
-              onDraft(text);
-            }}
-            disabled={!canProvoke || provoking}
-            className="btn-ghost"
-          >
-            Press
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setPressOpen(!pressOpen)}
+              disabled={!canProvoke || provoking}
+              className="btn-ghost"
+              aria-expanded={pressOpen}
+              aria-haspopup="true"
+            >
+              Press <span className="ml-1 text-[0.625rem] opacity-50">▾</span>
+            </button>
+            {pressOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setPressOpen(false)}
+                />
+                <div ref={pressMenuRef} className="press-dropdown absolute bottom-full right-0 mb-2 z-20 min-w-[10rem]" role="menu">
+                  <button
+                    role="menuitem"
+                    onClick={() => {
+                      setPressOpen(false);
+                      const text = editor ? extractUserText(editor) : contentRef.current;
+                      onPress(text, "soft");
+                    }}
+                  >
+                    <div>Soft</div>
+                    <div className="text-[0.625rem] text-muted-light mt-0.5">stays close to your words</div>
+                  </button>
+                  <button
+                    role="menuitem"
+                    onClick={() => {
+                      setPressOpen(false);
+                      const text = editor ? extractUserText(editor) : contentRef.current;
+                      onPress(text, "deep");
+                    }}
+                  >
+                    <div>Deep</div>
+                    <div className="text-[0.625rem] text-muted-light mt-0.5">full creative latitude</div>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import type { DraftMode } from "@/lib/types";
 export function DraftView({
   draft,
   streaming,
-  mode = "draft",
+  mode = "deep",
   onDraftChange,
   onContinue,
   onRevert,
@@ -52,8 +52,8 @@ export function DraftView({
       <div className="flex items-center justify-between mb-6">
         <div className="text-[0.6875rem] font-mono text-muted uppercase tracking-[0.08em]">
           {streaming
-            ? mode === "polish" ? "Polishing..." : "Pressing..."
-            : mode === "polish" ? "Polished" : "Pressed"
+            ? mode === "refine" ? "Refining..." : "Pressing..."
+            : mode === "refine" ? "Refined" : mode === "soft" ? "Soft pressed" : "Deep pressed"
           }
         </div>
         {!streaming && (
@@ -101,7 +101,7 @@ export function DraftView({
       {streaming ? (
         <div
           ref={streamRef}
-          className={`draft-text ${mode === "polish" ? "draft-polish" : "draft-press"} whitespace-pre-wrap py-4 min-h-[300px]`}
+          className={`draft-text ${mode === "refine" ? "draft-refine" : mode === "soft" ? "draft-soft" : "draft-deep"} whitespace-pre-wrap py-4 min-h-[300px]`}
         >
           {draft}
           <span className="inline-block w-[2px] h-[1.1em] bg-accent animate-pulse-slow ml-0.5 align-text-bottom" />
@@ -111,7 +111,7 @@ export function DraftView({
           ref={textareaRef}
           value={draft}
           onChange={(e) => onDraftChange(e.target.value)}
-          className={`draft-text ${mode === "polish" ? "draft-polish" : "draft-press"} draft-editable w-full bg-transparent py-4 min-h-[400px] resize-none overflow-hidden`}
+          className={`draft-text ${mode === "refine" ? "draft-refine" : mode === "soft" ? "draft-soft" : "draft-deep"} draft-editable w-full bg-transparent py-4 min-h-[400px] resize-none overflow-hidden`}
         />
       )}
     </div>

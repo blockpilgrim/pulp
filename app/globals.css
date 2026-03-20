@@ -294,14 +294,20 @@ body > * {
   caret-color: var(--accent);
 }
 
-/* Polish output — stays in workspace world (writer's own words) */
-.draft-polish {
+/* Refine output — writer's own words, cleaned up */
+.draft-refine {
   font-family: var(--font-quattro);
   line-height: 1.8;
 }
 
-/* Press output — crosses into literary world (shared authorship) */
-.draft-press {
+/* Soft Press output — collaborative, still writer's voice */
+.draft-soft {
+  font-family: var(--font-quattro);
+  line-height: 1.8;
+}
+
+/* Deep Press output — shared authorship */
+.draft-deep {
   font-family: var(--font-source-serif);
   line-height: 1.9;
 }
@@ -536,6 +542,41 @@ body > * {
   animation: popoverIn 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
+/* ========== Press Dropdown ========== */
+.press-dropdown {
+  background-color: var(--btn-surface);
+  background-image: url("/bg-pattern-noise.svg");
+  background-blend-mode: multiply;
+  background-repeat: repeat;
+  box-shadow: var(--shadow-edge), var(--shadow-paper);
+  border-radius: 1px;
+  font-family: var(--font-ia-mono);
+  animation: popoverIn 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.press-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  font-family: var(--font-ia-mono);
+  font-size: var(--type-sm);
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.press-dropdown button:hover {
+  color: var(--foreground);
+  background-color: var(--surface-hover);
+}
+
+.press-dropdown button:first-child {
+  border-bottom: 1px solid var(--border-light);
+}
+
 /* ========== Icon Buttons ========== */
 .icon-btn {
   display: inline-flex;
@@ -643,11 +684,15 @@ body > * {
     font-size: 1rem;
   }
 
-  .draft-polish {
+  .draft-refine {
     line-height: 1.8;
   }
 
-  .draft-press {
+  .draft-soft {
+    line-height: 1.8;
+  }
+
+  .draft-deep {
     line-height: 1.8;
   }
 

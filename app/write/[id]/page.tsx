@@ -37,7 +37,7 @@ export default function WritePage() {
   // Warn before closing during active API calls
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (streaming || session?.state === "provoking" || session?.state === "polishing") {
+      if (streaming || session?.state === "provoking" || session?.state === "refining" || session?.state === "pressing") {
         e.preventDefault();
       }
     };
@@ -52,7 +52,7 @@ export default function WritePage() {
       setDraftText(session.draft);
     }
     // If user closed tab during API call, reset to usable state
-    if (session.state === "provoking" || session.state === "drafting" || session.state === "polishing") {
+    if (session.state === "provoking" || session.state === "pressing" || session.state === "refining") {
       update({ state: "writing" });
     }
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -121,8 +121,8 @@ export default function WritePage() {
       if (!session) return;
       setError(null);
 
-      const activeState = mode === "polish" ? "polishing" : "drafting";
-      const doneState = mode === "polish" ? "polish" : "draft";
+      const activeState = mode === "refine" ? "refining" : "pressing";
+      const doneState = mode === "refine" ? "refine" : "press";
 
       update({ content: text, state: activeState, draftMode: mode, rawContent: text });
       setDraftText("");
@@ -182,8 +182,8 @@ export default function WritePage() {
     [session, update]
   );
 
-  const handlePolish = (text: string) => handleGenerate(text, "polish");
-  const handleDraft = (text: string) => handleGenerate(text, "draft");
+  const handleRefine = (text: string) => handleGenerate(text, "refine");
+  const handlePress = (text: string, intensity: "soft" | "deep") => handleGenerate(text, intensity);
 
   const handleContinue = useCallback(() => {
     if (!session) return;
@@ -297,8 +297,8 @@ export default function WritePage() {
           initialContent={session.content}
           onContentChange={handleContentChange}
           onProvoke={handleProvoke}
-          onPolish={handlePolish}
-          onDraft={handleDraft}
+          onRefine={handleRefine}
+          onPress={handlePress}
           provoking={state === "provoking"}
           title={session.title}
           direction={session.direction}
@@ -307,12 +307,12 @@ export default function WritePage() {
         />
       )}
 
-      {/* Polish / Draft result */}
-      {(state === "polishing" || state === "polish" || state === "drafting" || state === "draft") && (
+      {/* Refine / Press result */}
+      {(state === "refining" || state === "refine" || state === "pressing" || state === "press") && (
         <DraftView
           draft={draftText}
           streaming={streaming}
-          mode={session.draftMode || "draft"}
+          mode={session.draftMode || "deep"}
           onDraftChange={handleDraftChange}
           onContinue={handleContinue}
           onRevert={handleRevert}
