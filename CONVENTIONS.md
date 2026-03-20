@@ -21,6 +21,7 @@ app/                      # Next.js App Router pages and API routes
 middleware.ts             # Clerk middleware — runs on all routes, protects auth-required paths
 components/               # Shared React components
 lib/                      # Non-component logic: hooks, types, utilities
+  *.test.ts               # Colocated test files (e.g. utils.test.ts next to utils.ts)
 fonts/                    # WOFF2 font files (self-hosted iA Writer fonts)
 docs/                     # Design docs, product docs, specs
 ```
@@ -294,23 +295,58 @@ All imports use the `@/*` alias. No relative `../` imports.
 - Do not use `export default` for components. Only page files use default exports.
 - Do not put hooks in a `hooks/` directory. Custom hooks live in `lib/`.
 
+### Testing
+- Do not create a `__tests__/` or `tests/` directory. Test files are colocated next to source.
+- Do not use `.spec.ts`. The convention is `.test.ts`.
+- Do not rely on `globals: true` alone — always explicitly `import { describe, it, expect } from "vitest"`.
+- Do not mock what you can test directly. Prefer testing pure functions over mocking dependencies.
+
 ---
 
-## Test Infrastructure
+## Testing
 
-**Status: absent.** No test files exist in the project source. No test runner is installed (no Jest, Vitest, Playwright, or Cypress in `package.json`). The only code-quality script is `npm run lint` (ESLint with `eslint-config-next` and Next TypeScript rules).
+**Runner:** Vitest 4.x. Config in `vitest.config.ts`.
 
-**What BUILD-STRATEGY.md specifies for the upcoming subscription work:**
+```bash
+npm test             # Single run
+npm run test:watch   # Watch mode
+npm run test:coverage # V8 coverage report
+```
 
-Must-have tests for the BYOK → subscription transition:
+**Path aliases work in tests.** `resolve.tsconfigPaths: true` in vitest config resolves `@/*` imports — no separate alias setup needed.
+
+**Environment:** `node` by default. If a test needs DOM APIs (e.g. testing `downloadAsTxt`), set `// @vitest-environment happy-dom` at the top of that test file (install `happy-dom` first).
+
+**Test file conventions:**
+- **Colocated with source** — `lib/utils.test.ts` next to `lib/utils.ts`. No `__tests__/` directories.
+- **Naming:** `*.test.ts` only. Not `.spec.ts`, not `.test.tsx` (unless testing JSX).
+- **Explicit imports from `vitest`** — always `import { describe, it, expect } from "vitest"` at the top, even though `globals: true` is set. Makes the test framework obvious and gives better IDE support.
+
+**Test file structure:**
+```ts
+import { describe, it, expect } from "vitest";
+import { functionUnderTest } from "@/lib/module";
+
+describe("functionUnderTest", () => {
+  it("describes expected behavior concisely", () => {
+    expect(functionUnderTest(input)).toBe(expected);
+  });
+});
+```
+
+- One `describe` block per exported function or logical group
+- `it` descriptions are behavior-focused, not implementation-focused
+- Test data and helpers defined as module-level constants or local functions (e.g. `parseResponse` in `api-errors.test.ts`)
+- Use `@/*` path alias for importing source under test, `import type` for type-only imports
+
+**Coverage targets:** `lib/` and `app/api/`. Excludes test files themselves.
+
+**What to test:** Pure logic modules first — utility functions, data transformers, error mappers. Modules with external dependencies (Redis, localStorage, React hooks) need mocking or environment setup; defer those unless the logic is critical.
+
+**Planned tests for subscription work (from BUILD-STRATEGY.md):**
 1. Stripe webhook handler — use `stripe trigger` CLI to fire real events locally
 2. Clerk webhook handler — verify `user.created` syncs to DB correctly
 3. Usage gate — user at limit gets 429, user under limit passes
-
-Explicitly skipped:
-- Unit tests for pure functions in the billing layer
-- Mocked database tests (test against a real dev DB instead)
-- E2E tests for the core writing experience (it is not changing)
 
 ---
 
