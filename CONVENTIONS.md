@@ -11,7 +11,7 @@
 app/                      # Next.js App Router pages and API routes
   api/
     pulp/route.ts         # POST — provoke endpoint
-    draft/route.ts        # POST — polish/press streaming endpoint
+    draft/route.ts        # POST — refine/press streaming endpoint
     demo-status/route.ts  # GET — demo rate limit status
   write/[id]/page.tsx     # Dynamic write session page
   share/page.tsx          # Share view page
@@ -177,9 +177,9 @@ export const config = {
 `bg-background`, `bg-surface`, `bg-surface-hover`, `text-foreground`, `text-foreground-secondary`, `text-muted`, `text-muted-light`, `border-border`, `border-border-light`, `text-accent`, `text-accent-dark`, `bg-accent-light`, `bg-accent-highlight`
 
 **Tailwind font utilities:**
-- `font-sans` → iA Writer Quattro (writing surface, body text)
+- `font-sans` → iA Writer Quattro (writing surface, Refine output, Soft Press output)
 - `font-mono` → iA Writer Mono (all UI chrome: buttons, labels, captions, metadata, provocations)
-- `font-serif` → Source Serif 4 (Press output only — never use for UI)
+- `font-serif` → Source Serif 4 (Deep Press output only — never use for UI)
 
 **Type scale:** Defined as CSS vars (`--type-3xs` through `--type-2xl`) but referenced as raw `text-[Xrem]` Tailwind arbitrary values in JSX. The vars are documentation; the arbitrary values are what's in the code.
 
@@ -193,23 +193,23 @@ Observed sizes:
 
 **Component CSS classes in `globals.css` (use these, do not reinvent with Tailwind utilities):**
 - `.btn-primary` — primary action (Provoke, Start writing, Save key)
-- `.btn-ghost` — secondary action (Polish, Press)
+- `.btn-ghost` — secondary action (Refine, Press)
 - `.icon-btn` — 32×32 icon button
 - `.link-subtle` — muted underline link
 - `.animate-pulse-slow` — loading state pulse
 - `.hero-enter` + `.stagger-{0-3}` — homepage entrance animation
 - `.slide-over-backdrop` / `.slide-over-panel` — history panel slide-in/out
 - `.popover-enter` — settings popover entrance
-- `.draft-text`, `.draft-polish`, `.draft-press`, `.draft-editable` — draft output display
+- `.draft-text`, `.draft-refine`, `.draft-soft`, `.draft-deep`, `.draft-editable` — draft output display
 
 **Dark mode:** Controlled by `next-themes` using `attribute="data-theme"`. Theme values are `"light"`, `"dark"`, `"system"`. The selector in CSS is `[data-theme="dark"]`, not `.dark`. The `ThemeProvider` with these settings lives in `components/providers.tsx`.
 
 **Body font must be set explicitly in globals.css.** `body { font-family: var(--font-quattro), ... }` is required because Tailwind theme vars do not auto-cascade to `body` with Tailwind v4 + next/font.
 
 **Three-font authorship rule (load-bearing):**
-- Quattro = writer's voice (writing canvas, Polish output)
+- Quattro = writer's voice (writing canvas, Refine output, Soft Press output)
 - Mono = system/UI (every non-prose UI element)
-- Serif = shared authorship (Press output only)
+- Serif = shared authorship (Deep Press output only)
 This distinction is product-level, not cosmetic. Do not break it.
 
 ---
@@ -227,10 +227,12 @@ Key names:
 **Session state machine (`SessionState` from `lib/types.ts`):**
 - `"writing"` — editor active
 - `"provoking"` — provoke API call in flight
-- `"polishing"` — polish API call in flight
-- `"polish"` — polish output ready/editable
-- `"drafting"` — press API call in flight
-- `"draft"` — press output ready/editable
+- `"refining"` — refine API call in flight
+- `"refine"` — refine output ready/editable
+- `"pressing"` — press (soft or deep) API call in flight
+- `"press"` — press output ready/editable
+
+`DraftMode` (`"refine" | "soft" | "deep"`) distinguishes which specific transformation produced the output.
 
 **Store hooks** (`lib/store.ts`):
 - `useSessions()` — full list + CRUD; returns `{ sessions, loaded, createSession, updateSession, deleteSession, getSession }`
@@ -287,7 +289,7 @@ All imports use the `@/*` alias. No relative `../` imports.
 - Do not put shared domain types inline in component files. They belong in `lib/types.ts`.
 
 ### Styling
-- Do not use `font-serif` for UI elements. Source Serif 4 is reserved for Press output only.
+- Do not use `font-serif` for UI elements. Source Serif 4 is reserved for Deep Press output only.
 - Do not define colors or font tokens inside component files or Tailwind config — all tokens live in `globals.css`.
 - Do not create button variants by composing Tailwind utilities inline. New interaction patterns belong as named CSS classes in `globals.css`.
 
