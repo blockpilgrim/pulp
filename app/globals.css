@@ -420,6 +420,24 @@ body > * {
   outline-offset: 2px;
 }
 
+/* ========== Stats Reveal (Canvas toolbar) ========== */
+/* Touch devices: always visible. Pointer devices: fade in on hover near buttons */
+.stats-reveal {
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+@media (hover: hover) {
+  .stats-reveal {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .stats-hover-zone:hover .stats-reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Dark mode: buttons are transparent at rest, surface emerges on hover.
    Paper metaphor becomes ghostly — the sheet materializes when you reach for it. */
 [data-theme="dark"] .btn-primary,
@@ -612,6 +630,10 @@ body > * {
   .popover-enter {
     animation-duration: 0.01s !important;
     animation-delay: 0ms !important;
+  }
+
+  .stats-reveal {
+    transition-duration: 0.01s !important;
   }
 }
 

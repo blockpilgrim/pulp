@@ -226,6 +226,7 @@ export function Canvas({
   const userText = editor ? extractUserText(editor) : contentRef.current;
   const canProvoke = userText.trim().length > 20;
   const wordCount = userText.trim() ? userText.trim().split(/\s+/).length : 0;
+  const hasStats = wordCount > 0 || provocationCount > 0 || !!provocationsData;
 
   return (
     <div className="w-full max-w-2xl mx-auto flex-1 flex flex-col">
@@ -241,19 +242,7 @@ export function Canvas({
         <EditorContent editor={editor} />
       </div>
 
-      <div className="flex items-center justify-between py-4">
-        <div className="text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
-          {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
-          {provocationCount > 0 && <span>provoked {provocationCount}x</span>}
-          {provocationsData && (
-            <button
-              onClick={handleShare}
-              className="link-subtle cursor-pointer"
-            >
-              {shareLabel}
-            </button>
-          )}
-        </div>
+      <div className="stats-hover-zone flex flex-col items-center pt-12">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
@@ -261,7 +250,7 @@ export function Canvas({
               onProvoke(text);
             }}
             disabled={!canProvoke || provoking}
-            className="btn-primary"
+            className="btn-ghost"
           >
             {provoking ? "Thinking..." : "Provoke"}
           </button>
@@ -319,6 +308,20 @@ export function Canvas({
             )}
           </div>
         </div>
+        {hasStats && (
+          <div className="stats-reveal mt-4 text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
+            {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
+            {provocationCount > 0 && <span>provoked {provocationCount}x</span>}
+            {provocationsData && (
+              <button
+                onClick={handleShare}
+                className="link-subtle cursor-pointer"
+              >
+                {shareLabel}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
