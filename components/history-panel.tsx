@@ -86,8 +86,8 @@ export function HistoryPanel({ onClose, sessions, onSelect, onDelete }: HistoryP
         aria-modal="true"
         aria-label="Session history"
         tabIndex={-1}
-        className={`absolute top-0 right-0 h-full w-full sm:w-80 bg-surface shadow-[-4px_0_16px_rgba(0,0,0,0.06)] flex flex-col slide-over-panel ${closing ? "closing" : ""}`}
-        style={{ outline: "none" }}
+        className={`absolute top-0 right-0 h-full w-full sm:w-80 bg-surface flex flex-col slide-over-panel ${closing ? "closing" : ""}`}
+        style={{ outline: "none", boxShadow: "var(--shadow-panel)" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-light">

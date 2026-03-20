@@ -66,8 +66,8 @@ export function SettingsPopover({ onClose, containerRef }: { onClose: () => void
     <div
       role="dialog"
       aria-label="Settings"
-      className="popover-enter absolute top-[calc(100%+8px)] left-0 min-w-[220px] max-sm:min-w-[calc(100vw-2rem)] p-4 bg-surface border border-border rounded-[4px] shadow-[0_4px_12px_rgba(0,0,0,0.08)]"
-      style={{ zIndex: 20 }}
+      className="popover-enter absolute top-[calc(100%+8px)] left-0 min-w-[220px] max-sm:min-w-[calc(100vw-2rem)] p-4 bg-surface rounded-[1px]"
+      style={{ zIndex: 20, boxShadow: "var(--shadow-paper)" }}
     >
       <ThemeToggle />
       <div>

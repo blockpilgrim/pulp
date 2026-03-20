@@ -51,6 +51,8 @@
   --shadow-ghost-active: 0 0 1px rgba(60, 45, 30, 0.10);
   --shadow-edge: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --shadow-edge-ghost: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  /* Panel: slide-over edge shadow */
+  --shadow-panel: -4px 0 16px rgba(60, 45, 30, 0.08);
 
   /* Provocations — left bar + muted text in both themes */
   --provocation-color: var(--muted);
@@ -110,6 +112,7 @@
   --shadow-ghost-active: 0 0 1px rgba(0, 0, 0, 0.16);
   --shadow-edge: 0 0 0 0 transparent;
   --shadow-edge-ghost: 0 0 0 0 transparent;
+  --shadow-panel: -4px 0 16px rgba(0, 0, 0, 0.12);
 
   /* Dark mode: restore plain gradient — multiply on dark bg = black */
   background-image: radial-gradient(ellipse at 50% 30%, var(--background) 0%, var(--background-edge) 100%);
@@ -605,14 +608,13 @@ body > * {
   color: var(--muted-light);
   border: none;
   background: transparent;
-  border-radius: 4px;
+  border-radius: 1px;
   cursor: pointer;
-  transition: color 0.2s ease, background 0.15s ease;
+  transition: color 0.25s ease;
 }
 
 .icon-btn:hover {
-  color: var(--foreground);
-  background: var(--surface-hover);
+  color: var(--foreground-secondary);
 }
 
 .icon-btn:focus-visible {
