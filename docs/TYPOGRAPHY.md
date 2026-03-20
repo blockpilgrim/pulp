@@ -4,11 +4,13 @@
 
 ## Philosophy
 
-Pulp's product arc has two kinds of transformation — and the typography should distinguish them. **Polish** cleans up the writer's own words; authorship stays with the writer. **Press** composes new prose from the writer's raw thinking; authorship is shared. These are fundamentally different acts, and the type should make that visible.
+Pulp's product arc has three kinds of transformation — and the typography should distinguish them by what matters: who wrote it. **Refine** cleans up the writer's own words; authorship is unambiguous. **Soft Press** collaborates closely with the writer, filling gaps and elevating phrasing; authorship is mostly the writer's. **Deep Press** composes new prose from the writer's raw thinking; authorship is shared. These are fundamentally different acts, but only the last one crosses the typographic threshold.
 
-When the writer is in the raw-thinking phase, the type should feel like a workspace — honest, unfinished, a little rough. When they Polish, the type stays the same — because the words are still theirs, just cleaned up. When they Press, the type shifts to something warmer and more literary. That moment of visual change *is* the product moment. The writer sees their messy thinking made beautiful.
+When the writer is in the raw-thinking phase, the type should feel like a workspace — honest, unfinished, a little rough. When they Refine, the type stays the same — because the words are still theirs, just cleaned up. When they Soft Press, the type *still* stays the same — because the words are still recognizably theirs, just strengthened. The writer should read Soft Press output and think *"that's me, but on a better day"* — and the type confirms it by staying in their world. Only when they Deep Press does the type shift to something warmer and more literary. That moment of visual change *is* the product moment. The writer sees their messy thinking made beautiful.
 
-This is directly inspired by iA Writer's core insight: **monospaced and quasi-monospaced type signals "work in progress."** It tells the writer: this text is about what it says, not how it looks. That's exactly what Pulp needs during the write and probe phases. But unlike iA Writer — which is purely a writing tool and stays in monospace throughout — Pulp has a second act. Press is where craft appears. That's where serif enters. Polish, by contrast, stays in the workspace world — because the craft is the writer's own.
+This is directly inspired by iA Writer's core insight: **monospaced and quasi-monospaced type signals "work in progress."** It tells the writer: this text is about what it says, not how it looks. That's exactly what Pulp needs during the write and probe phases. But unlike iA Writer — which is purely a writing tool and stays in monospace throughout — Pulp has a second act. Deep Press is where craft appears. That's where serif enters. Refine and Soft Press, by contrast, stay in the workspace world — because the voice is still the writer's own.
+
+The key nuance: the font change doesn't signal "AI helped" — it signals "AI wrote." Both Refine and Soft Press involve AI, but the authorship remains recognizably the writer's. The serif is earned only when the AI takes full creative ownership.
 
 Three fonts. Two worlds. One transition that earns the serif.
 
@@ -22,7 +24,7 @@ Three fonts. Two worlds. One transition that earns the serif.
 |------|------|--------|--------------|
 | **Writing surface** | iA Writer Quattro | Self-hosted (GitHub) | `--font-quattro` |
 | **UI chrome** | iA Writer Mono | Self-hosted (GitHub) | `--font-mono` |
-| **Press output** | Source Serif 4 | Google Fonts | `--font-serif` |
+| **Deep Press output** | Source Serif 4 | Google Fonts | `--font-serif` |
 
 ### Why these three
 
@@ -30,7 +32,7 @@ Three fonts. Two worlds. One transition that earns the serif.
 
 **iA Writer Mono** (UI chrome, provocations, labels) — Strict monospace for everything that isn't the writer's prose. Provocations, buttons, metadata, round indicators, navigation. Mono communicates "system," "tool," "interface." Since Mono and Quattro share the same design DNA (both derived from IBM Plex, both reworked by iA with square dots and adjusted curves), they feel like family — unlike the current Geist Mono + Source Serif pairing, which are unrelated typefaces.
 
-**Source Serif 4** (Press output only) — The serif enters *only* when the AI composes new prose via Press. Not when it Polishes. This is the reveal. The typographic shift from Quattro to Source Serif tells the writer: "your raw thinking has been transformed into something literary — authorship is now shared." Polish output stays in Quattro because the words are still the writer's own. Source Serif 4 is an excellent variable serif with optical sizing — it stays on Google Fonts for convenience since it's only loaded when Press renders.
+**Source Serif 4** (Deep Press output only) — The serif enters *only* when the AI composes new prose via Deep Press. Not when it Refines. Not when it Soft Presses. This is the reveal. The typographic shift from Quattro to Source Serif tells the writer: "your raw thinking has been transformed into something literary — authorship is now shared." Refine and Soft Press output stay in Quattro because the words are still recognizably the writer's own. Source Serif 4 is an excellent variable serif with optical sizing — it stays on Google Fonts for convenience since it's only loaded when Deep Press renders.
 
 ### Why not Google Font alternatives?
 
@@ -93,18 +95,22 @@ The iA fonts are free and open source (SIL Open Font License, derived from IBM P
 ### The Two Worlds
 
 ```
-WORKSPACE WORLD (write, probe, polish)      LITERARY WORLD (press)
+WORKSPACE WORLD (write, probe, refine,      LITERARY WORLD (deep press)
+soft press)
 ─────────────────────────────────────────   ──────────────────────────────
-iA Writer Quattro — writing surface         Source Serif 4 — pressed prose
-iA Writer Quattro — polish output           iA Writer Mono — UI chrome persists
+iA Writer Quattro — writing surface         Source Serif 4 — deep-pressed prose
+iA Writer Quattro — refine output           iA Writer Mono — UI chrome persists
+iA Writer Quattro — soft press output
 iA Writer Mono — everything else
 ```
 
 The mono UI chrome stays constant across both worlds. It's the frame. Only the content font changes — and that single change carries all the meaning.
 
-**Polish stays in the workspace world.** This is deliberate. Polish preserves the writer's words, voice, and structure — authorship is unambiguous. The type should confirm this: "these are still your words." Switching to serif would falsely signal a transformation of authorship that didn't happen.
+**Refine stays in the workspace world.** This is deliberate. Refine preserves the writer's words, voice, and structure — authorship is unambiguous. The type should confirm this: "these are still your words." Switching to serif would falsely signal a transformation of authorship that didn't happen.
 
-**Press crosses into the literary world.** Press composes new prose. Authorship is shared. The serif signals this honestly: "something new has been written from your thinking."
+**Soft Press stays in the workspace world too.** This is the important nuance. Soft Press involves real AI collaboration — restructuring, gap-filling, phrasing elevation — but the writer's words are still the foundation. At least 80% of the output is recognizably the writer's own language. The type confirms this by staying in Quattro: "these are still your words, strengthened." Switching to serif here would overstate the AI's role and undercut the writer's ownership.
+
+**Deep Press crosses into the literary world.** Deep Press composes new prose. Authorship is shared. The serif signals this honestly: "something new has been written from your thinking."
 
 The writer can always **revert** — returning to their raw text and the workspace world. And they can **continue** with any output — taking it back to the canvas for more writing, probing, or another transformation. The flow is cyclical; the typography follows.
 
@@ -112,7 +118,7 @@ The writer can always **revert** — returning to their raw text and the workspa
 
 ### Writing Surface (the single canvas)
 
-The most important text in the app. Everything happens here — braindumping, responding to inline provocations, continuing after Polish or Press. One continuous TipTap editor.
+The most important text in the app. Everything happens here — braindumping, responding to inline provocations, continuing after Refine or Press. One continuous TipTap editor.
 
 | Property | Value | Notes |
 |----------|-------|-------|
@@ -146,9 +152,9 @@ These must look unmistakably different from the writer's text. They're system-in
 | Border | Left bar (dark) | 2px accent left border replaces highlighter in dark mode |
 | Block margin | 0.25rem top, 0.75rem bottom | Tight top margin couples provocation to preceding text |
 
-### Polish Output (writer's words, cleaned up)
+### Refine Output (writer's words, cleaned up)
 
-Polish preserves the writer's words and voice. The type confirms this by staying in the workspace font.
+Refine preserves the writer's words and voice. The type confirms this by staying in the workspace font.
 
 | Property | Value | Notes |
 |----------|-------|-------|
@@ -159,11 +165,28 @@ Polish preserves the writer's words and voice. The type confirms this by staying
 | Color | `var(--foreground)` | Full contrast |
 | Caret | `var(--accent)` | When editing |
 
-The writer should read Polish output and barely notice a typographic change — because there isn't one. The text looks the same; the words are cleaner. That's the point.
+The writer should read Refine output and barely notice a typographic change — because there isn't one. The text looks the same; the words are cleaner. That's the point.
 
 **Mobile (< 640px):** Same responsive behavior as writing surface.
 
-### Press Output (AI-composed prose)
+### Soft Press Output (writer's words, strengthened)
+
+Soft Press collaborates with the writer but stays anchored to their voice. The type confirms this by remaining in Quattro — the workspace world. The AI's contribution (restructuring, gap-filling, phrasing elevation) is real but invisible in the typography, because the writer's ownership is still dominant.
+
+| Property | Value | Notes |
+|----------|-------|-------|
+| Font | iA Writer Quattro | Same as writing surface — these are still recognizably the writer's words |
+| Size | 1.125rem (18px) | Same size as writing surface — visual continuity |
+| Line-height | 1.8 | Same as writing surface |
+| Weight | 400 | Regular |
+| Color | `var(--foreground)` | Full contrast |
+| Caret | `var(--accent)` | When editing |
+
+Soft Press and Refine are typographically identical. The distinction lives in the mode label, not the type. This is intentional — both outputs belong to the writer. If you need to tell Refine from Soft Press, you check the label; if you need to tell the writer's world from the AI's world, you check the font. These are orthogonal concerns.
+
+**Mobile (< 640px):** Same responsive behavior as writing surface.
+
+### Deep Press Output (AI-composed prose)
 
 This is the transformation moment. The font changes from Quattro to Source Serif 4. The writer sees their raw thinking made literary. Authorship is now shared.
 
@@ -176,13 +199,13 @@ This is the transformation moment. The font changes from Quattro to Source Serif
 | Color | `var(--foreground)` | Full contrast |
 | Caret | `var(--accent)` | When editing |
 
-The size parity between writing surface (Quattro 18px) and Press (Serif 18px) is deliberate. The words occupy the same space — only the character changes. Raw becomes refined without getting bigger or louder.
+The size parity between writing surface (Quattro 18px) and Deep Press (Serif 18px) is deliberate. The words occupy the same space — only the character changes. Raw becomes refined without getting bigger or louder.
 
 **Mobile (< 640px):** Size drops to 1rem. Line-height to 1.8.
 
 ### Continue / Revert Actions
 
-After any transformation, the writer sees "continue with this" and "revert" actions. These follow the standard navigation link style (Mono, 12px, muted). When the writer continues with Polish output, the text returns to the canvas in Quattro — seamless, since it was already in Quattro. When they continue with Press output, the text also returns to the canvas in Quattro — because it's now their working text again, back in the workspace world.
+After any transformation, the writer sees "continue with this" and "revert" actions. These follow the standard navigation link style (Mono, 12px, muted). When the writer continues with Refine or Soft Press output, the text returns to the canvas in Quattro — seamless, since it was already in Quattro. When they continue with Deep Press output, the text also returns to the canvas in Quattro — because it's now their working text again, back in the workspace world.
 
 ### Home Page Hero
 
@@ -311,12 +334,12 @@ Each step is intentional. The gaps are larger at the top (where hierarchy needs 
 
 ---
 
-## The Two Transitions
+## The Three Transitions
 
-### Polish: the non-transition
+### Refine: the non-transition
 
 ```
-BEFORE (writing)                      AFTER (polish)
+BEFORE (writing)                      AFTER (refine)
 ──────────────────────────            ──────────────────────────
 
 iA Writer Quattro 18/1.8              iA Writer Quattro 18/1.8
@@ -330,10 +353,28 @@ other people want for me              other people want for me?
 
 Same font. Same size. Same world. The words are cleaner — grammar fixed, punctuation added, rough edges smoothed — but the type confirms: these are still yours. The non-transition is the message.
 
-### Press: the transformation
+### Soft Press: the near-non-transition
 
 ```
-BEFORE (writing)                      AFTER (press)
+BEFORE (writing)                      AFTER (soft press)
+──────────────────────────            ──────────────────────────
+
+iA Writer Quattro 18/1.8              iA Writer Quattro 18/1.8
+
+what if the thing i'm                 What if the thing I'm really
+really afraid of isnt                 afraid of isn't failure — it's
+failure but the specific              the specific shape of success
+shape of success that                 that other people want for me.
+other people want for me              The version of my life that
+                                      would make them comfortable.
+```
+
+Same font. Same size. Same world — but the words have been *worked*. The AI restructured, smoothed transitions, filled a gap with a clarifying sentence. The writer reads it and thinks: "that's me, but on a better day." The type stays in Quattro because the voice is still theirs. The near-non-transition tells the writer: the AI helped, but you're still the author.
+
+### Deep Press: the transformation
+
+```
+BEFORE (writing)                      AFTER (deep press)
 ──────────────────────────            ──────────────────────────
 
 iA Writer Quattro 18/1.8              Source Serif 4 18/1.9
@@ -347,9 +388,9 @@ other people want for me              it was the particular
                                       others had drawn for you.
 ```
 
-Same size. Same column width. Same basic density. But the character of the text shifts from functional to literary. Quattro's even spacing and square geometry gives way to Source Serif's organic curves, varied widths, and serif details. The writer's raw thinking has been "pressed" — and the type tells them so.
+Same size. Same column width. Same basic density. But the character of the text shifts from functional to literary. Quattro's even spacing and square geometry gives way to Source Serif's organic curves, varied widths, and serif details. The writer's raw thinking has been "deep pressed" — and the type tells them so.
 
-Both transitions should be animated — a brief fade or crossfade as the output streams in. But only Press should feel like an unveiling. Polish should feel like a quiet cleanup.
+All three transitions should be animated — a brief fade or crossfade as the output streams in. But only Deep Press should feel like an unveiling. Refine should feel like a quiet cleanup. Soft Press should feel like a gentle strengthening — noticeable if you're looking, invisible if you're not.
 
 ---
 
@@ -360,8 +401,9 @@ Both transitions should be animated — a brief fade or crossfade as the output 
 | Element | Desktop | Mobile |
 |---------|---------|--------|
 | Writing surface | 1.125rem / 1.8 | 1rem / 1.8 |
-| Polish output | 1.125rem / 1.8 | 1rem / 1.8 |
-| Press output | 1.125rem / 1.9 | 1rem / 1.8 |
+| Refine output | 1.125rem / 1.8 | 1rem / 1.8 |
+| Soft Press output | 1.125rem / 1.8 | 1rem / 1.8 |
+| Deep Press output | 1.125rem / 1.9 | 1rem / 1.8 |
 | Provocations | 0.8125rem / 1.6 | 0.75rem / 1.6 |
 | Buttons | 0.8125rem | 0.875rem (slightly larger for touch) |
 | Page title | 1.75rem | 1.5rem |
@@ -450,12 +492,13 @@ Add to README or globals.css:
 |-------------|--------|-------|-----|
 | Writing surface | Source Serif 4 (serif) | iA Writer Quattro (4-width) | Signals "work in progress," not "publication" |
 | UI mono | Geist Mono | iA Writer Mono | Same family as Quattro — unified design DNA |
-| Polish output | Source Serif 4 | iA Writer Quattro | Writer's own words — stays in workspace world |
-| Press output | Source Serif 4 | Source Serif 4 (unchanged) | Serif reserved for the shared-authorship moment |
+| Refine output | Source Serif 4 | iA Writer Quattro | Writer's own words — stays in workspace world |
+| Soft Press output | (n/a — new mode) | iA Writer Quattro | Writer's words, strengthened — still the writer's world |
+| Deep Press output | Source Serif 4 | Source Serif 4 (unchanged) | Serif reserved for the shared-authorship moment |
 | Sans-serif | Geist Sans | Removed | Barely used; Quattro fills this role |
 | Font loading | 3 Google Fonts | 2 self-hosted + 1 Google Font | Eliminates CDN dependency for primary fonts |
 | Type scale | Ad-hoc sizes | Rationalized 9-step scale | Consistent hierarchy across all contexts |
 | Home hero | 1.75rem serif | 4rem Quattro Light | Proto-logotype; "pulp" = writer's raw material |
 | Home tagline | Quattro | Mono italic | System voice — tool speaking to user |
 | Provocations (dark) | Highlighter gradient | Left bar + muted text | Adapts to dark mode without noisy highlights |
-| Core idea | Same font for everything | Font change signals authorship change | Polish = your words (Quattro). Press = shared prose (Serif). |
+| Core idea | Same font for everything | Font change signals authorship change | Refine + Soft Press = your words (Quattro). Deep Press = shared prose (Serif). |
