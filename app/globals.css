@@ -451,9 +451,15 @@ body > * {
   }
 
   .canvas-toolbar > * {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+
+  .canvas-toolbar.is-typing > * {
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 300ms ease, transform 300ms ease;
+    transition: opacity 250ms ease, transform 250ms ease;
   }
 
   .canvas-toolbar:hover > * {

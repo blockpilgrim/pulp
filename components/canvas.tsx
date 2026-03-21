@@ -135,7 +135,11 @@ export function Canvas({
   const provocationsAppliedRef = useRef<PulpResponse | null>(null);
   const [shareLabel, setShareLabel] = useState("share");
   const [pressOpen, setPressOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const pressMenuRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const canProvokeRef = useRef(false);
+  const editorWrapperRef = useRef<HTMLDivElement>(null);
 
   // Focus first menu item on open, close on Escape
   useEffect(() => {
@@ -238,8 +242,28 @@ export function Canvas({
     return () => window.removeEventListener('resize', update);
   }, [editor]);
 
+  // Auto-hide toolbar during active typing, reappear after pause
+  useEffect(() => {
+    const wrapper = editorWrapperRef.current;
+    if (!wrapper) return;
+
+    const handleInput = () => {
+      if (!canProvokeRef.current) return;
+      setIsTyping(true);
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 4000);
+    };
+
+    wrapper.addEventListener("input", handleInput, true);
+    return () => {
+      wrapper.removeEventListener("input", handleInput, true);
+      clearTimeout(typingTimeoutRef.current);
+    };
+  }, []);
+
   const userText = editor ? extractUserText(editor) : contentRef.current;
   const canProvoke = userText.trim().length > 20;
+  canProvokeRef.current = canProvoke;
   const wordCount = userText.trim() ? userText.trim().split(/\s+/).length : 0;
   const hasStats = wordCount > 0 || provocationCount > 0 || !!provocationsData;
 
@@ -253,11 +277,11 @@ export function Canvas({
         </div>
       )}
 
-      <div className="tiptap-editor-wrapper flex-1">
+      <div ref={editorWrapperRef} className="tiptap-editor-wrapper flex-1">
         <EditorContent editor={editor} />
       </div>
 
-      <div className="canvas-toolbar">
+      <div className={`canvas-toolbar${isTyping ? ' is-typing' : ''}`}>
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
