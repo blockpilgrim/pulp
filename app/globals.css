@@ -40,6 +40,9 @@
   --btn-surface: #f7f2eb;
   --btn-primary-color: var(--foreground);
 
+  /* Pattern Read glow (neutral foreground shadow) */
+  --pattern-glow: 0 0 10px rgba(44, 40, 37, 0.25), 0 0 28px rgba(44, 40, 37, 0.12);
+
   /* Paper elevation shadows — warm brown to match parchment */
   /* Primary: card stock — softened contact, clear ambient */
   --shadow-paper: 0 1px 2px rgba(60, 45, 30, 0.11), 0 3px 8px rgba(60, 45, 30, 0.12);
@@ -102,6 +105,9 @@
   --btn-surface: #1c1916;
   /* Primary text — softened to avoid "bright label on dark card" */
   --btn-primary-color: var(--foreground-secondary);
+
+  /* Pattern Read glow — dark mode */
+  --pattern-glow: 0 0 10px rgba(232, 224, 212, 0.3), 0 0 28px rgba(232, 224, 212, 0.15);
 
   /* Paper elevation shadows — dark mode, no edge highlights */
   --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.18);
@@ -625,6 +631,80 @@ body > * {
   border-bottom: 1px solid var(--border-light);
 }
 
+/* ========== Pattern Read (Provoke loading) ========== */
+/* Shimmer: gradient mapped to text color sweeps top→bottom.
+   Words: individual substantive words illuminate to full foreground in cycles.
+   Canvas/background is completely unaffected — all visual change is in the text itself. */
+.tiptap-editor-wrapper.is-pattern-reading .tiptap {
+  background: linear-gradient(
+    180deg,
+    var(--muted-light) 0%,
+    var(--muted-light) 47%,
+    var(--foreground-secondary) 50%,
+    var(--muted-light) 53%,
+    var(--muted-light) 100%
+  );
+  background-size: 100% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmerSweep 2.8s linear infinite;
+  transition: color 0.6s ease;
+}
+
+/* Snap back — no crossfade on exit (provocation insertion masks the cut) */
+.tiptap-editor-wrapper:not(.is-pattern-reading) .tiptap {
+  transition: none;
+}
+
+@keyframes shimmerSweep {
+  0% { background-position: 0 0%; }
+  100% { background-position: 0 100%; }
+}
+
+/* Illuminated words — own background-clip overrides parent gradient */
+@keyframes wordIlluminate {
+  0%, 100% {
+    background-color: transparent;
+    text-shadow: none;
+  }
+  15%, 70% {
+    background-color: var(--foreground);
+    text-shadow: var(--pattern-glow);
+  }
+}
+
+.pattern-read-word {
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: wordIlluminate 1.6s ease both;
+  animation-delay: calc(var(--pr-i, 0) * 100ms);
+}
+
+/* ========== Grain Shift (ambient loading texture) ========== */
+/* Paper grain subtly shifts during any AI operation */
+@keyframes grainShift {
+  0%, 100% { background-position: 0 0, 0 0; }
+  25% { background-position: 4px 2px, 0 0; }
+  50% { background-position: -2px 5px, 0 0; }
+  75% { background-position: 5px -2px, 0 0; }
+}
+
+@keyframes grainPulse {
+  0%, 100% { opacity: var(--texture-opacity); }
+  50% { opacity: calc(var(--texture-opacity) + 0.1); }
+}
+
+/* Light mode: shift the noise pattern position */
+html.grain-active:not([data-theme="dark"]) {
+  animation: grainShift 3s ease-in-out infinite;
+}
+
+/* Dark mode: pulse the body::after grain overlay */
+[data-theme="dark"].grain-active body::after {
+  animation: grainPulse 2.5s ease-in-out infinite;
+}
+
 /* ========== Icon Buttons ========== */
 .icon-btn {
   display: inline-flex;
@@ -663,6 +743,20 @@ body > * {
 
   .canvas-toolbar > * {
     transition-duration: 0.01s !important;
+  }
+
+  .pattern-read-word,
+  .tiptap-editor-wrapper.is-pattern-reading .tiptap {
+    animation-duration: 0.01s !important;
+    animation-delay: 0ms !important;
+  }
+
+  html.grain-active:not([data-theme="dark"]) {
+    animation-duration: 0.01s !important;
+  }
+
+  [data-theme="dark"].grain-active body::after {
+    animation-duration: 0.01s !important;
   }
 }
 

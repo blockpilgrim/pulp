@@ -34,6 +34,17 @@ export default function WritePage() {
     }
   }, []);
 
+  // Grain Shift: subtle texture animation during AI operations
+  useEffect(() => {
+    if (!session) return;
+    const isLoading =
+      session.state === "provoking" ||
+      session.state === "refining" ||
+      session.state === "pressing";
+    document.documentElement.classList.toggle("grain-active", isLoading);
+    return () => document.documentElement.classList.remove("grain-active");
+  }, [session?.state]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Warn before closing during active API calls
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {

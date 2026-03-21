@@ -111,7 +111,9 @@ export function DraftView({
           className={`draft-text ${mode === "refine" ? "draft-refine" : mode === "soft" ? "draft-soft" : "draft-deep"} whitespace-pre-wrap py-4 min-h-[300px]`}
         >
           {draft}
-          <span className="inline-block w-[2px] h-[1.1em] bg-accent animate-pulse-slow ml-0.5 align-text-bottom" />
+          {draft.length > 0 && (
+            <span className="inline-block w-[2px] h-[1.1em] bg-accent animate-pulse-slow ml-0.5 align-text-bottom" />
+          )}
         </div>
       ) : (
         <textarea

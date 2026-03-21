@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { ProvocationExtension } from "@/lib/provocation-extension";
+import { PatternReadExtension, setPatternReadActive } from "@/lib/pattern-read-extension";
 import { useEffect, useRef, useState } from "react";
 import type { PulpResponse } from "@/lib/types";
 import type { JSONContent } from "@tiptap/core";
@@ -189,6 +190,7 @@ export function Canvas({
         placeholder: "Write freely. No structure needed. Just think out loud...",
       }),
       ProvocationExtension,
+      PatternReadExtension,
     ],
     content: initialContent ? contentStringToDoc(initialContent) : undefined,
     editable: !provoking,
@@ -242,6 +244,19 @@ export function Canvas({
     return () => window.removeEventListener('resize', update);
   }, [editor]);
 
+  // Pattern Read: activate/deactivate word highlighting during provoking
+  useEffect(() => {
+    if (!editor) return;
+    if (provoking) {
+      setPatternReadActive(editor, true);
+      return () => {
+        if (!editor.isDestroyed) {
+          setPatternReadActive(editor, false);
+        }
+      };
+    }
+  }, [provoking, editor]);
+
   // Auto-hide toolbar during active typing, reappear after pause
   useEffect(() => {
     const wrapper = editorWrapperRef.current;
@@ -277,11 +292,11 @@ export function Canvas({
         </div>
       )}
 
-      <div ref={editorWrapperRef} className="tiptap-editor-wrapper flex-1">
+      <div ref={editorWrapperRef} className={`tiptap-editor-wrapper flex-1${provoking ? " is-pattern-reading" : ""}`}>
         <EditorContent editor={editor} />
       </div>
 
-      <div className={`canvas-toolbar${isTyping ? ' is-typing' : ''}`}>
+      <div className={`canvas-toolbar${isTyping && !provoking ? ' is-typing' : ''}`}>
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
