@@ -223,6 +223,21 @@ export function Canvas({
     }
   }, [editor]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Typewriter scroll: keep cursor comfortably above viewport bottom
+  useEffect(() => {
+    if (!editor?.view) return;
+    const update = () => {
+      const vh = window.innerHeight;
+      editor.view.setProps({
+        scrollMargin: { top: 80, right: 0, bottom: Math.round(vh * 0.55), left: 0 },
+        scrollThreshold: { top: 80, right: 0, bottom: Math.round(vh * 0.55), left: 0 },
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [editor]);
+
   const userText = editor ? extractUserText(editor) : contentRef.current;
   const canProvoke = userText.trim().length > 20;
   const wordCount = userText.trim() ? userText.trim().split(/\s+/).length : 0;
@@ -242,7 +257,7 @@ export function Canvas({
         <EditorContent editor={editor} />
       </div>
 
-      <div className="stats-hover-zone flex flex-col items-center pt-12">
+      <div className="canvas-toolbar">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
@@ -309,7 +324,7 @@ export function Canvas({
           </div>
         </div>
         {hasStats && (
-          <div className="stats-reveal mt-4 text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
+          <div className="mt-3 text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
             {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
 
             {provocationsData && (

@@ -218,6 +218,13 @@ body > * {
   padding: 1rem 0;
 }
 
+/* Scroll past end — extra space below content for typewriter scroll */
+@media (hover: hover) {
+  .tiptap-editor-wrapper .tiptap {
+    padding-bottom: 55vh;
+  }
+}
+
 .tiptap-editor-wrapper .tiptap:focus {
   outline: none;
 }
@@ -423,19 +430,33 @@ body > * {
   outline-offset: 2px;
 }
 
-/* ========== Stats Reveal (Canvas toolbar) ========== */
-/* Touch devices: always visible. Pointer devices: fade in on hover near buttons */
-.stats-reveal {
-  transition: opacity 300ms ease, transform 300ms ease;
+/* ========== Canvas Toolbar (Hover-Reveal Action Bar) ========== */
+/* Touch devices: in-flow below editor, always visible.
+   Pointer devices: fixed at viewport bottom, fades in on hover. */
+.canvas-toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3rem;
 }
 
 @media (hover: hover) {
-  .stats-reveal {
-    opacity: 0;
-    transform: translateY(4px);
+  .canvas-toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 1rem 1.5rem;
+    z-index: 10;
   }
 
-  .stats-hover-zone:hover .stats-reveal {
+  .canvas-toolbar > * {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 300ms ease, transform 300ms ease;
+  }
+
+  .canvas-toolbar:hover > * {
     opacity: 1;
     transform: translateY(0);
   }
@@ -634,7 +655,7 @@ body > * {
     animation-delay: 0ms !important;
   }
 
-  .stats-reveal {
+  .canvas-toolbar > * {
     transition-duration: 0.01s !important;
   }
 }
