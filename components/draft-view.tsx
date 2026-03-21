@@ -7,6 +7,7 @@ export function DraftView({
   draft,
   streaming,
   mode = "deep",
+  rawWordCount = 0,
   onDraftChange,
   onContinue,
   onRevert,
@@ -16,6 +17,7 @@ export function DraftView({
   draft: string;
   streaming: boolean;
   mode?: DraftMode;
+  rawWordCount?: number;
   onDraftChange: (v: string) => void;
   onContinue?: () => void;
   onRevert?: () => void;
@@ -40,6 +42,11 @@ export function DraftView({
     el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
   }, [draft, streaming]);
+
+  const draftWordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+  const pctYours = rawWordCount > 0 && draftWordCount > 0
+    ? Math.min(100, Math.round((rawWordCount / draftWordCount) * 100))
+    : null;
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(draft);
@@ -113,6 +120,12 @@ export function DraftView({
           onChange={(e) => onDraftChange(e.target.value)}
           className={`draft-text ${mode === "refine" ? "draft-refine" : mode === "soft" ? "draft-soft" : "draft-deep"} draft-editable w-full bg-transparent py-4 min-h-[400px] resize-none overflow-hidden`}
         />
+      )}
+
+      {draftWordCount > 0 && (
+        <div className="mt-8 text-center text-[0.6875rem] font-mono text-muted-light tracking-[0.08em]">
+          {draftWordCount} word{draftWordCount === 1 ? "" : "s"}{pctYours !== null && <> · {pctYours}% yours</>}
+        </div>
       )}
     </div>
   );

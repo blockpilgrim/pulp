@@ -311,7 +311,7 @@ export function Canvas({
         {hasStats && (
           <div className="stats-reveal mt-4 text-[0.6875rem] font-mono text-muted-light tracking-[0.08em] flex items-center gap-3">
             {wordCount > 0 && <span>{wordCount} word{wordCount === 1 ? "" : "s"}</span>}
-            {provocationCount > 0 && <span>provoked {provocationCount}x</span>}
+
             {provocationsData && (
               <button
                 onClick={handleShare}

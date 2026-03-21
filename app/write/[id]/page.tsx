@@ -255,6 +255,10 @@ export default function WritePage() {
     );
   }
 
+  const rawWordCount = session.rawContent?.trim()
+    ? session.rawContent.trim().split(/\s+/).length
+    : 0;
+
   const state = session.state;
   const showCanvas = state === "writing" || state === "provoking";
 
@@ -313,6 +317,7 @@ export default function WritePage() {
           draft={draftText}
           streaming={streaming}
           mode={session.draftMode || "deep"}
+          rawWordCount={rawWordCount}
           onDraftChange={handleDraftChange}
           onContinue={handleContinue}
           onRevert={handleRevert}

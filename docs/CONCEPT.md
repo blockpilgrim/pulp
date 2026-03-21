@@ -210,6 +210,14 @@ The parallel to Theodore Twombly's job in the film "Her" is instructive. Theodor
 
 Soft Press exists because sometimes you want Theodore to stay closer to your own phrasing — to improve your letter, not rewrite it. Refine exists because sometimes you don't want Theodore at all — you just want a copy editor. The app respects all three needs equally.
 
+### Making the spectrum tangible
+
+The spectrum is not just theoretical — it's surfaced to the writer as a concrete number. After any transformation, the app shows authorship as a percentage: *"156 words · 81% yours."* This is the ratio of the writer's input word count to the output word count. Refine barely changes word count (97–99% yours). Soft Press adds light connective tissue (typically 80–90% yours). Deep Press composes new prose and the percentage drops accordingly (often 35–50% yours). The numbers naturally align with the spectrum because each mode is defined by how much it *adds*, not how much it *changes*.
+
+The computation is deliberately volume-based, not word-level. A word-level diff — tracking which specific words survived transformation — would penalize Soft Press unfairly. When Soft Press rewrites a clumsy sentence into a cleaner one, the *words* changed but the *authorship* didn't: the idea, the intent, and the voice are still the writer's. The volume ratio sidesteps this by measuring how much of the final output's length came from the writer's input. Sentence-level rewrites don't register as lost authorship, which is correct — they're changes in execution, not ownership.
+
+When the writer accepts the output ("continue with this"), the metric resets. The transformed text becomes their working text — theirs to build on, provoke, or transform again. Each transformation cycle is independent. There is no cumulative decline, no number that creeps downward over a session. The percentage appears when it's meaningful — an active transformation to measure against — and disappears when the writer reclaims the text as their own.
+
 ---
 
 ## Design Principles
