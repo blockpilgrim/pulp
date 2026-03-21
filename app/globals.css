@@ -459,18 +459,29 @@ body > * {
   .canvas-toolbar > * {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 400ms ease, transform 400ms ease;
+    transition: opacity 1s ease, transform 1s ease;
   }
 
   .canvas-toolbar.is-typing > * {
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 250ms ease, transform 250ms ease;
+    transition: opacity 2s ease, transform 2s ease;
   }
 
-  .canvas-toolbar:hover > * {
+  .canvas-toolbar:not(.content-behind):hover > * {
     opacity: 1;
     transform: translateY(0);
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+
+  .canvas-toolbar.content-behind {
+    pointer-events: none;
+  }
+
+  .canvas-toolbar.content-behind > * {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 }
 

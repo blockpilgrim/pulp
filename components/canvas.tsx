@@ -137,10 +137,13 @@ export function Canvas({
   const [shareLabel, setShareLabel] = useState("share");
   const [pressOpen, setPressOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [contentOverlapsToolbar, setContentOverlapsToolbar] = useState(false);
   const pressMenuRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const canProvokeRef = useRef(false);
   const editorWrapperRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<ReturnType<typeof useEditor>>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
 
   // Focus first menu item on open, close on Escape
   useEffect(() => {
@@ -201,6 +204,9 @@ export function Canvas({
     },
   });
 
+  // Keep editor ref in sync for event handlers
+  useEffect(() => { editorRef.current = editor; }, [editor]);
+
   // Sync editable state with provoking
   useEffect(() => {
     if (!editor) return;
@@ -257,24 +263,120 @@ export function Canvas({
     }
   }, [provoking, editor]);
 
-  // Auto-hide toolbar during active typing, reappear after pause
+  // Auto-hide toolbar during typing; reappear after sentence end (6s) or mid-sentence pause (30s)
   useEffect(() => {
     const wrapper = editorWrapperRef.current;
     if (!wrapper) return;
 
-    const handleInput = () => {
-      if (!canProvokeRef.current) return;
+    const SENTENCE_END_DELAY = 6000;
+    const MID_SENTENCE_DELAY = 30000;
+
+    const scheduleToolbar = (delay: number) => {
       setIsTyping(true);
       clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 4000);
+      typingTimeoutRef.current = setTimeout(() => setIsTyping(false), delay);
+    };
+
+    const getDelay = (): number => {
+      const ed = editorRef.current;
+      if (!ed) return MID_SENTENCE_DELAY;
+
+      const { from } = ed.state.selection;
+      const $pos = ed.state.doc.resolve(from);
+      const parentNode = $pos.parent;
+
+      // Empty paragraph → user just pressed Enter (paragraph break)
+      if (parentNode.type.name === "paragraph" && parentNode.content.size === 0) {
+        return SENTENCE_END_DELAY;
+      }
+
+      // Check text before cursor for sentence-ending punctuation
+      if ($pos.parentOffset > 0) {
+        const textBeforeCursor = parentNode.textContent.substring(0, $pos.parentOffset);
+        const trimmed = textBeforeCursor.trimEnd();
+        if (trimmed.length > 0 && /[.!?]$/.test(trimmed)) {
+          return SENTENCE_END_DELAY;
+        }
+      }
+
+      return MID_SENTENCE_DELAY;
+    };
+
+    const handleInput = () => {
+      if (!canProvokeRef.current) return;
+      scheduleToolbar(getDelay());
+    };
+
+    // Enter key creates a paragraph break — handle in keydown as fallback
+    // in case ProseMirror suppresses the native input event
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!canProvokeRef.current) return;
+      if (e.key === "Enter") {
+        scheduleToolbar(SENTENCE_END_DELAY);
+      }
     };
 
     wrapper.addEventListener("input", handleInput, true);
+    wrapper.addEventListener("keydown", handleKeyDown, true);
     return () => {
       wrapper.removeEventListener("input", handleInput, true);
+      wrapper.removeEventListener("keydown", handleKeyDown, true);
       clearTimeout(typingTimeoutRef.current);
     };
   }, []);
+
+  // Hide toolbar when written content extends into the toolbar zone
+  useEffect(() => {
+    const toolbar = toolbarRef.current;
+    if (!toolbar) return;
+
+    let rafId = 0;
+
+    const check = () => {
+      // Only relevant when toolbar is fixed-positioned (hover/pointer devices)
+      if (getComputedStyle(toolbar).position !== "fixed") {
+        setContentOverlapsToolbar(false);
+        return;
+      }
+
+      const ed = editorRef.current;
+      if (!ed?.view) return;
+
+      try {
+        const endPos = ed.state.doc.content.size;
+        const coords = ed.view.coordsAtPos(endPos);
+        const toolbarTop = window.innerHeight - toolbar.offsetHeight;
+        setContentOverlapsToolbar(coords.bottom > toolbarTop);
+      } catch {
+        setContentOverlapsToolbar(false);
+      }
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(check);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", check, { passive: true });
+
+    // Re-check when editor content changes (typing extends the document)
+    const ed = editor;
+    if (ed) {
+      ed.on("update", check);
+    }
+
+    check();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", check);
+      if (ed && !ed.isDestroyed) {
+        ed.off("update", check);
+      }
+    };
+  }, [editor]);
 
   const userText = editor ? extractUserText(editor) : contentRef.current;
   const canProvoke = userText.trim().length > 20;
@@ -296,7 +398,7 @@ export function Canvas({
         <EditorContent editor={editor} />
       </div>
 
-      <div className={`canvas-toolbar${isTyping && !provoking ? ' is-typing' : ''}`}>
+      <div ref={toolbarRef} className={`canvas-toolbar${isTyping && !provoking ? ' is-typing' : ''}${contentOverlapsToolbar ? ' content-behind' : ''}`}>
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
